@@ -24,7 +24,11 @@ add-apt-repository ppa:ondrej/php -y
 sudo apt update
 
 
-mkdir -p /opt/vps_lemp
+mkdir -p /opt
+cd /opt/
+
+git clone https://github.com/lempvn/lemp.git vps_lemp
+
 
 #
 # Link tai goi cai dat lemp ve
