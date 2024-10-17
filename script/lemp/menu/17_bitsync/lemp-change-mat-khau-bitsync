@@ -1,0 +1,91 @@
+#!/bin/bash
+. /home/lemp.conf
+if [ ! -f /etc/lemp/btsync.info ]; then
+clear
+echo "========================================================================= "
+echo "Ban chua cai dat BTsync"
+/etc/lemp/menu/17_bitsync/lemp-bitsync-menu
+else
+echo "========================================================================= "
+echo "Su dung chuc nang nay de thay User va Mat khau quan ly  BitTorrent Sync"
+echo "-------------------------------------------------------------------------"
+read -r -p "Ban muon thay user va mat khau BTsync ? [y/N] " response
+case $response in
+    [yY][eE][sS]|[yY]) 
+    echo "-------------------------------------------------------------------------"
+echo "Chuan bi thay mat khau BTsync ... "
+sleep 1
+killall -q btsync
+pkill btsync
+rm -rf /etc/btsync-lemp/.sync/*.pid
+rm -rf /etc/btsync-lemp/.btsync/*.pid
+random=`date |md5sum |cut -c '1-6'`
+username=lemp-$random
+password=`date |md5sum |cut -c '6-20'`
+rm -rf /etc/btsync-lemp/sync.conf
+yes | cp -rf /etc/lemp/btsync.info /tmp/btsync.info
+rm -rf /etc/lemp/btsync.info
+
+    cat > "/etc/lemp/btsync.info" <<END
+{ 
+username = $username
+password = $password
+btport = $(grep btport /tmp/btsync.info | awk 'NR==1 {print $3}')
+}
+END
+checksize=$(du -sb /usr/bin/btsync | awk 'NR==1 {print $1}')
+if [ $checksize -gt 9000000 ]; then
+cat > "/etc/btsync-lemp/sync.conf" <<END
+{ 
+  "device_name": "lemp",
+  "listening_port" : 0,
+  "storage_path" : "/etc/btsync-lemp/.sync",
+  "check_for_updates" : false, 
+  "use_upnp" : true,
+  "download_limit" : 0,                       
+  "upload_limit" : 0, 
+  "webui" :
+  {
+    "listen" : "0.0.0.0:$(grep btport /tmp/btsync.info | awk 'NR==1 {print $3}')",
+    "login" : "$username",
+    "password" : "$password"
+  }
+}
+END
+else
+cat > "/etc/btsync-lemp/sync.conf" <<END
+{ 
+  "device_name": "lemp",
+  "listening_port" : 0,
+  "storage_path" : "/etc/btsync-lemp/.btsync",
+  "check_for_updates" : false, 
+  "use_upnp" : true,
+  "download_limit" : 0,                       
+  "upload_limit" : 0, 
+  "webui" :
+  {
+    "listen" : "0.0.0.0:$(grep btport /tmp/btsync.info | awk 'NR==1 {print $3}')",
+    "login" : "$username",
+    "password" : "$password"
+  }
+}
+END
+fi
+/usr/bin/btsync --config /etc/btsync-lemp/sync.conf
+rm -rf /tmp/btsync.info
+clear 
+echo "========================================================================= "
+echo "Thay user va mat khau cho BTsync thanh cong "
+echo "-------------------------------------------------------------------------"
+echo "Thong tin quan ly Btsync moi:"
+echo "-------------------------------------------------------------------------"
+echo "Link truy cap: http://$serverip:$(grep btport /etc/lemp/btsync.info | awk 'NR==1 {print $3}')"
+echo "-------------------------------------------------------------------------"
+echo "User: $(grep username /etc/lemp/btsync.info | awk 'NR==1 {print $3}') | Password: $(grep password /etc/lemp/btsync.info | awk 'NR==1 {print $3}')"
+/etc/lemp/menu/17_bitsync/lemp-bitsync-menu
+esac
+clear 
+echo "========================================================================= "
+echo "Huy bo thay mat khau BTsync "
+/etc/lemp/menu/17_bitsync/lemp-bitsync-menu
+fi

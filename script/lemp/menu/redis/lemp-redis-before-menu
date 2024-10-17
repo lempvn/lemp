@@ -1,0 +1,12 @@
+#!/bin/bash
+. /home/lemp.conf
+
+# Kiểm tra xem Redis có đang chạy không
+if [ ! "$(redis-cli ping)" = "PONG" ]; then
+    # Khởi động dịch vụ Redis
+    systemctl restart redis
+    clear
+    /etc/lemp/menu/redis/lemp-redis-menu-no-config
+else
+    /etc/lemp/menu/redis/lemp-redis-menu
+fi

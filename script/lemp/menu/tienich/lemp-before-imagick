@@ -1,0 +1,20 @@
+#!/bin/bash
+. /home/lemp.conf
+
+# Kiểm tra trạng thái của php-fpm
+if [ "$(systemctl is-active php8.2-fpm.service)" == "active" ]; then  # Thay đổi php8.2 với phiên bản PHP bạn đang sử dụng
+    /etc/lemp/menu/tienich/lemp-imagick-cai-dat-remove
+else
+    echo "-------------------------------------------------------------------------"
+    sudo systemctl restart php8.2-fpm.service  # Thay đổi php8.2 với phiên bản PHP bạn đang sử dụng
+    if [ "$(systemctl is-active php8.2-fpm.service)" == "active" ]; then  # Thay đổi php8.2 với phiên bản PHP bạn đang sử dụng
+        /etc/lemp/menu/tienich/lemp-imagick-cai-dat-remove
+    else
+        clear
+        echo "========================================================================="
+        echo "PHP-FPM không thể khởi động!"
+        echo "-------------------------------------------------------------------------"
+        echo "Bạn không thể cài đặt / Gỡ bỏ imagick"
+        /etc/lemp/menu/tienich/lemp-tien-ich
+    fi
+fi

@@ -1,0 +1,45 @@
+#!/bin/bash
+. /home/lemp.conf
+
+prompt="Nhập lựa chọn của bạn: "
+options=()
+redistatus=""
+
+# Kiểm tra trạng thái dịch vụ Redis
+if [ "$(systemctl is-active redis.service)" == "active" ]; then
+    options=("Vô hiệu hóa Redis Cache" "Xóa Redis Cache" "Cấu hình Redis Cache" "Kiểm tra Redis Status" "Gỡ cài đặt Redis Cache")
+    redistatus="Đang hoạt động"
+else
+    options=("Kích hoạt Redis Cache" "Xóa Redis Cache" "Cấu hình Redis Cache" "Kiểm tra Redis Status" "Gỡ cài đặt Redis Cache")
+    redistatus="Đã dừng"
+fi
+
+# Hiển thị thông tin Redis
+printf "=========================================================================\n"
+printf "                LEMP - Quản Lý VPS/Server by LEMP.VN \n"
+printf "=========================================================================\n"
+printf "                           Quản Lý Redis Cache                                \n"
+printf "=========================================================================\n"
+printf "          Redis: $redistatus - Ram Max: $(grep -E "^[^#]*maxmemory " /etc/redis/redis.conf | awk '{print $2}' | sed 's/mb//') M "
+if [ "$(systemctl is-active redis.service)" == "active" ]; then
+    printf " - Ram Đang Sử Dụng: $(redis-cli INFO | grep used_memory_human | sed 's/used_memory_human://') \n"
+else
+    printf "\n"
+fi
+printf "=========================================================================\n"
+
+PS3="$prompt"
+select opt in "${options[@]}" "Thoát"; do 
+    case "$REPLY" in
+        1) /etc/lemp/menu/redis/lemp-before-bat-tat-redis;;
+        2) /etc/lemp/menu/redis/lemp-clear-redis;;
+        3) /etc/lemp/menu/redis/lemp-redis-change-size;;
+        4) /etc/lemp/menu/redis/lemp-check-redis-status;;
+        5) /etc/lemp/menu/redis/lemp-install-remove-redis;;
+        $(( ${#options[@]} + 1 )) ) 
+            echo ""; clear && /bin/lemp;;
+        *) 
+            echo "Bạn nhập sai, vui lòng nhập theo số thứ tự trên menu!"
+            continue;;
+    esac
+done

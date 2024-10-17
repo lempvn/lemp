@@ -1,0 +1,42 @@
+#!/bin/bash
+. /home/lemp.conf
+
+prompt="Nhap lua chon cua ban:"
+options=()
+
+# Kiểm tra trạng thái của Memcached
+if [ "$(systemctl is-active memcached.service)" == "active" ]; then
+    options=("Disable Memcached" "Restart Memcached" "Config Memcached" "Clear Memcached" "Remove Memcached")
+else
+    options=("Enable Memcached" "Restart Memcached" "Config Memcached" "Clear Memcached" "Remove Memcached")
+fi
+
+printf "=========================================================================\n"
+printf "                LEMP - Quan Ly VPS/Server by LEMP.VN \n"
+printf "=========================================================================\n"
+printf "                            Quan Ly Memcached \n"
+printf "=========================================================================\n"
+
+# Hiển thị trạng thái Memcached
+if [ "$(systemctl is-active memcached.service)" == "active" ]; then
+    echo "        Memcached Status: Running - Configured RAM Usage: $(/bin/systemctl show memcached.service | grep MemoryLimit | awk -F= '{print $2}') MB"
+else
+    echo "                      Memcached Status: Stopped"
+fi
+
+printf "=========================================================================\n"
+printf "Link Memcached Manage: http://$serverip:$priport/memcache.php\n"
+printf "=========================================================================\n"
+
+PS3="$prompt"
+select opt in "${options[@]}" "Thoat"; do 
+    case "$REPLY" in
+        1 ) /etc/lemp/menu/memcache/lemp-before-bat-tat-memcache;;
+        2 ) /etc/lemp/menu/memcache/lemp-memcache-restart;;
+        3 ) /etc/lemp/menu/memcache/lemp-memcache-change-size;;
+        4 ) /etc/lemp/menu/memcache/lemp-clear-memcache;; 
+        5 ) /etc/lemp/menu/memcache/lemp-install-remove-memcache;;
+        $(( ${#options[@]}+1 )) ) echo ""; clear && /bin/lemp;;
+        *) echo "Ban nhap sai, vui long nhap theo so thu tu tren menu !"; continue;;
+    esac
+done

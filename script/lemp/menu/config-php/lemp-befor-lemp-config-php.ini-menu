@@ -1,0 +1,38 @@
+#!/bin/bash 
+
+. /home/lemp.conf
+
+PHP_VERSION=$(php -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;")
+# Kiểm tra trạng thái PHP-FPM
+if [ "$(systemctl is-active php${PHP_VERSION}-fpm.service)" == "active" ]; then
+    /etc/lemp/menu/config-php/lemp-config-php.ini-menu
+else
+    clear
+    echo "========================================================================"
+    echo "Dich vu PHP-FPM khong dang chay"
+    echo "------------------------------------------------------------------------"
+    echo "LEMP dang co gang khoi dong no"
+    echo "------------------------------------------------------------------------"
+    echo "Xin vui lòng chờ ..."
+    sleep 5; clear
+    echo "-------------------------------------------------------------------------"
+    systemctl start php${PHP_VERSION}-fpm.service  # Thay đổi phiên bản PHP nếu cần
+    clear
+    echo "========================================================================"
+    echo "Kiểm tra dịch vụ PHP-FPM một lần nữa!"
+    echo "------------------------------------------------------------------------"
+    echo "Xin vui lòng chờ ..."
+    sleep 5; clear
+    if [ "$(systemctl is-active php${PHP_VERSION}-fpm.service)" == "active" ]; then
+        /etc/lemp/menu/config-php/lemp-config-php.ini-menu
+    else
+        clear
+        echo "========================================================================"
+        echo "LEMP không thể khởi động dịch vụ PHP-FPM"
+        sleep 4;
+        clear
+        echo "========================================================================="
+        echo "Xin lỗi, PHP${PHP_VERSION}-FPM đã dừng lại. Hãy bật nó lên trước khi sử dụng chức năng này!"
+        lemp
+    fi
+fi

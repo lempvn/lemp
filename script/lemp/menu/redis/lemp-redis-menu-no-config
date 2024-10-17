@@ -1,0 +1,37 @@
+#!/bin/bash
+. /home/lemp.conf
+
+prompt="Nhập lựa chọn của bạn:"
+options=()
+
+# Kiểm tra trạng thái dịch vụ Redis
+if [ "$(systemctl is-active redis.service)" == "active" ]; then
+    options=("Gỡ cài đặt Redis Cache")
+else
+    options=("Cài đặt Redis Cache")
+fi
+
+printf "=========================================================================\n"
+printf "                LEMP - Quản Lý VPS/Server by LEMP.VN \n"
+printf "=========================================================================\n"
+printf "                           Quản Lý Redis Cache                                \n"
+printf "=========================================================================\n"
+printf "          		   Redis: Chưa cài đặt				      \n" 
+printf "=========================================================================\n"
+
+PS3="$prompt"
+select opt in "${options[@]}" "Thoát"; do
+    case "$REPLY" in
+        1) 
+            # Chạy script cài đặt hoặc gỡ cài đặt Redis
+            /etc/lemp/menu/redis/lemp-install-remove-redis
+            ;;
+        $(( ${#options[@]} + 1 )) ) 
+            echo ""; clear && /bin/lemp
+            ;;
+        *) 
+            echo "Bạn nhập sai, vui lòng nhập theo số thứ tự trên menu!"
+            continue
+            ;;
+    esac
+done

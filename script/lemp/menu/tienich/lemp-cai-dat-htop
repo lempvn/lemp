@@ -1,0 +1,50 @@
+#!/bin/bash 
+. /home/lemp.conf
+
+# Kiểm tra xem htop đã được cài đặt hay chưa
+if [ -f /usr/bin/htop ]; then
+    clear
+    echo "========================================================================= "
+    echo "HTOP đã cài đặt trên server  "
+    echo "-------------------------------------------------------------------------"
+    echo "Chạy HTOP bằng command: htop "
+    /etc/lemp/menu/tienich/lemp-tien-ich
+    exit
+fi
+
+echo "========================================================================="
+echo "Htop là PM xem trạng thái server tương tự như [ top -c ] nhưng chi tiết hơn"
+echo "-------------------------------------------------------------------------"
+echo "Sử dụng chức năng này để cài đặt htop cho server. "
+echo "-------------------------------------------------------------------------"
+read -r -p "Bạn muốn cài đặt htop?  [y/N] " response
+case $response in
+    [yY][eE][sS]|[yY]) 
+        echo "-------------------------------------------------------------------------"
+        echo "Please wait ..."; sleep 1
+        # Cài đặt htop trên Ubuntu
+        sudo apt update
+        sudo apt install -y htop
+
+        if [ -f /usr/bin/htop ]; then
+            clear
+            echo "========================================================================="
+            echo "Cài đặt HTOP thành công "
+            echo "-------------------------------------------------------------------------"
+            echo "Chạy HTOP bằng command: htop "
+        else
+            clear
+            echo "========================================================================="
+            echo "Cài đặt htop thất bại"
+            echo "-------------------------------------------------------------------------"
+            echo "Bạn vui lòng thử lại."
+        fi
+        /etc/lemp/menu/tienich/lemp-tien-ich
+        ;;
+    *)
+       clear
+       /etc/lemp/menu/tienich/lemp-tien-ich
+       ;;
+esac
+
+find / -name 'htop'

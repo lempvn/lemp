@@ -1,0 +1,19 @@
+#!/bin/bash
+. /home/lemp.conf
+
+# Kiểm tra xem Memcached có đang chạy không
+if [ "$(systemctl is-active memcached.service)" == "active" ]; then
+    echo "-------------------------------------------------------------------------"
+    echo "Please wait...."; sleep 1
+    echo "flush_all" | nc -q 2 localhost 11211 
+    clear
+    echo "========================================================================= "
+    echo "Clear memcached thanh cong !"
+    /etc/lemp/menu/memcache/lemp-before-memcache-menu
+else
+    clear
+    echo "========================================================================= "
+    echo "Memcached dang tat tren server."
+    /etc/lemp/menu/memcache/lemp-before-memcache-menu
+    exit
+fi

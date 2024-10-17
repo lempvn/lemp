@@ -1,0 +1,18 @@
+#!/bin/bash
+. /home/lemp.conf
+
+# Kiểm tra xem nginx có đang chạy hay không
+if [ "$(systemctl is-active nginx)" == "active" ]; then
+    /etc/lemp/menu/lemp-xoa-website
+else
+    echo "-------------------------------------------------------------------------"
+    systemctl restart nginx
+    if [ "$(systemctl is-active nginx)" == "active" ]; then
+        /etc/lemp/menu/lemp-xoa-website
+    else
+        clear
+        echo "========================================================================="
+        echo "Rất tiếc, Nginx đang stopped. Hãy bật Nginx trước khi sử dụng chức năng này!"
+        lemp
+    fi
+fi

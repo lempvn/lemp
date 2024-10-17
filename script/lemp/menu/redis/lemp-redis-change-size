@@ -1,0 +1,67 @@
+#!/bin/bash 
+. /home/lemp.conf
+
+# Kiểm tra xem Redis có đang chạy không
+if [ "$(redis-cli ping)" != "PONG" ]; then
+    clear
+    echo "========================================================================="
+    echo "Redis đang dừng."
+    echo "-------------------------------------------------------------------------"
+    echo "Bạn phải bật Redis lên bằng lệnh [ systemctl start redis ]"
+    /etc/lemp/menu/redis/lemp-redis-menu
+    exit
+fi
+
+echo "========================================================================="
+echo "Chức năng này cấu hình lượng RAM lớn nhất (MAX RAM) Redis có thể sử dụng"
+echo "-------------------------------------------------------------------------"
+echo "Max RAM là số tự nhiên nằm trong khoảng (40 - $(calc $( free -m | awk 'NR==2 {print $2}')/5))."
+echo "-------------------------------------------------------------------------"
+echo -n "Nhập lượng RAM lớn nhất cho Redis [ENTER]: " 
+read maxredis
+
+# Kiểm tra xem người dùng có nhập gì không
+if [ -z "$maxredis" ]; then
+    clear
+    echo "========================================================================="
+    echo "Bạn nhập sai, vui lòng nhập lại."
+    /etc/lemp/menu/redis/lemp-redis-menu
+    exit
+fi
+
+# Kiểm tra xem giá trị RAM có hợp lệ không
+if ! [[ $maxredis -ge 40 && $maxredis -le $(calc $( free -m | awk 'NR==2 {print $2}')/5) ]]; then  
+    clear
+    echo "========================================================================="
+    echo "$maxredis không hợp lệ!"
+    echo "-------------------------------------------------------------------------"
+    echo "RAM cho Redis phải là số tự nhiên nằm trong khoảng (40 - $(calc $( free -m | awk 'NR==2 {print $2}')/5))."
+    /etc/lemp/menu/redis/lemp-redis-menu
+    exit
+fi  
+
+echo "-------------------------------------------------------------------------"
+echo "Vui lòng chờ ....."
+sleep 1
+
+# Ghi cấu hình vào tệp redis.conf
+# Thay đổi giá trị maxmemory trong tệp redis.conf
+if grep -q "^[^#]*maxmemory" /etc/redis/redis.conf; then
+    sed -i "s/^[^#]*maxmemory .*/maxmemory ${maxredis}mb/" /etc/redis/redis.conf
+else
+    echo "maxmemory ${maxredis}mb" >> /etc/redis/redis.conf
+fi
+
+if ! grep -q "^maxmemory-policy" /etc/redis/redis.conf; then
+    sed -i "1s/^/maxmemory-policy allkeys-lru\n/" /etc/redis/redis.conf
+fi
+
+# Khởi động lại dịch vụ Redis
+systemctl restart redis
+
+clear
+echo "========================================================================="
+echo "Cấu hình Max RAM cho Redis thành công"
+echo "-------------------------------------------------------------------------"
+echo "Redis có thể sử dụng lượng RAM tối đa là: $maxredis MB "
+/etc/lemp/menu/redis/lemp-redis-menu

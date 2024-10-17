@@ -1,0 +1,39 @@
+#!/bin/bash 
+. /home/lemp.conf
+
+# Kiểm tra nếu cổng đã được mở
+if ufw status | grep -q "$priport/tcp.*ALLOW"; then
+    clear
+    echo "========================================================================="
+    echo "Port Phpmyadmin port ($priport) đang OPEN."
+    echo "-------------------------------------------------------------------------"
+    echo "Bạn không cần mở lại nó!"
+    /etc/lemp/menu/5_phpmyadmin/lemp-phpmyadmin-menu
+    exit
+fi
+
+echo "========================================================================="
+echo "Port ($priport) phải được mở nếu bạn muốn truy cập Phpmyadmin,"
+echo "-------------------------------------------------------------------------"
+echo "Hãy tải các file qua port này như: Backup files, Log files"
+echo "-------------------------------------------------------------------------"
+read -r -p "Bạn muốn mở port $priport? [y/N] " response
+case $response in
+    [yY][eE][sS]|[yY]) 
+        echo "Vui lòng đợi...."; sleep 1
+        clear
+        echo "========================================================================="
+        echo "Mở phpmyadmin port ($priport) thành công!"
+        echo "-------------------------------------------------------------------------"
+        echo "Bạn đã có thể truy cập phpmyadmin và download backup, log, CSR...files"
+        echo "-------------------------------------------------------------------------"
+        sudo ufw allow $priport/tcp  # Mở cổng qua UFW
+        /etc/lemp/menu/5_phpmyadmin/lemp-phpmyadmin-menu
+        ;;
+    *)
+        clear
+        echo "========================================================================="
+        echo "Bạn hủy việc mở Phpmyadmin Port (Port $priport)"
+        /etc/lemp/menu/5_phpmyadmin/lemp-phpmyadmin-menu
+        ;;
+esac

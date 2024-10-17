@@ -1,0 +1,34 @@
+#!/bin/bash 
+. /home/lemp.conf
+
+# Kiểm tra trạng thái của Redis
+if [ ! "$(redis-cli ping)" = "PONG" ]; then
+    clear
+    echo "========================================================================="
+    echo "Redis đang dừng"
+    echo "-------------------------------------------------------------------------"
+    echo "Bạn phải bật Redis lên bằng lệnh [systemctl start redis.service]"
+    /etc/lemp/menu/redis/lemp-redis-menu
+    exit
+fi
+
+echo "========================================================================="
+echo "Chức năng này sẽ kiểm tra trạng thái Redis trong 30 giây" 
+echo "-------------------------------------------------------------------------"
+echo "Sau đó sẽ tự động quay trở lại Menu Quản Lý Redis Cache"
+echo "-------------------------------------------------------------------------"
+echo "Sau khi nhấn [Enter], bạn truy cập website đã bật Redis"
+echo "-------------------------------------------------------------------------"
+echo "Và nhìn vào trạng thái Redis dưới dòng này"
+echo "========================================================================="
+read -p "Nhấn [Enter] để bắt đầu kiểm tra ..."
+
+# Kiểm tra trạng thái Redis trong 30 giây
+timeout 30 redis-cli monitor
+clear
+
+echo "========================================================================="
+echo "Kiểm tra Redis hoàn thành!"
+echo "-------------------------------------------------------------------------"
+echo "Redis đang hoạt động"
+/etc/lemp/menu/redis/lemp-redis-menu

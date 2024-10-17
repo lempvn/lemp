@@ -1,0 +1,26 @@
+#!/bin/bash 
+. /home/lemp.conf
+
+# Kiểm tra xem Redis có đang chạy không
+if [ ! "$(redis-cli ping)" = "PONG" ]; then
+    clear
+    echo "========================================================================="
+    echo "Redis đang dừng"
+    echo "-------------------------------------------------------------------------"
+    echo "Bạn phải bật Redis lên bằng lệnh [ systemctl start redis.service ]"
+    /etc/lemp/menu/redis/lemp-redis-menu
+    exit
+fi
+
+echo "-------------------------------------------------------------------------"
+echo "Please wait ..." 
+sleep 1
+
+# Xóa tất cả dữ liệu trong Redis
+( echo "flushall" ) | redis-cli
+clear
+
+echo "========================================================================="
+echo "Xóa cache Redis thành công"
+echo "-------------------------------------------------------------------------"
+/etc/lemp/menu/redis/lemp-redis-menu

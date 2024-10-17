@@ -1,0 +1,51 @@
+#!/bin/bash
+prompt="Lua chon cua ban (0-Thoat):"
+options=( "Thay Password Root" "Fix Loi Chmod, Chown" "Find Top Largest Files & Folders" "Service Running & Ram Use" "Kiem Tra IP/Nameserver Website" \
+"File Size Converter " "Kiem Tra Thong Tin Server" "Cai Dat Server Timezone" "Install / Remove Imagick" "Cai Dat Htop" \
+"Backup Config File & Vhost" "Thay Doi Port SSH Number" "Config SSH Timeout" "Block Exploits, SQL Injections" "Deny Run Script In Upload Folder" \
+"Dat Mat Khau Bao Ve Folder" "BAT/TAT Email Thong Bao Login" "BAT/TAT Auto Run lemp" "Canh Bao Full Disc Tren Menu" "Restart Service" "TocDo.net" \
+"Varnish Cache" "Update All Website Wordpress" "Install Composer" "Go Bo (Remove) lemp" )
+printf "=========================================================================\n"
+printf "                LEMP - Quan Ly VPS/Server by LEMP.VN \n"
+printf "=========================================================================\n"
+printf "                           Tien Ich - Addons\n"
+printf "=========================================================================\n"
+
+PS3="$prompt"
+select opt in "${options[@]}" ; do 
+
+    case "$REPLY" in
+	1) /etc/lemp/menu/lemp-doi-pass-root-vps;;
+	2) /etc/lemp/menu/tienich/lemp-sua-loi-chown;;
+	3) /etc/lemp/menu/tienich/lemp-xem-danh-sach-max-dung-luong-file-menu;;
+	4) /etc/lemp/menu/tienich/lemp-dich-vu-dang-chay-va-ram-dung;;
+	5) /etc/lemp/menu/tienich/lemp-tim-ip-nameserver-website;;
+	6) /etc/lemp/menu/lemp-chuyen-doi-don-vi-file-size-convert;;
+	7) /etc/lemp/menu/tienich/lemp-view-thong-tin-ip-vps;;
+	8) clear && /etc/lemp/menu/lemp-thay-doi-thong-tin-thoi-gian;; 
+	9) /etc/lemp/menu/tienich/lemp-before-imagick;;
+	#10) /etc/lemp/menu/tienich/lemp-before-ioncube;;
+	10) /etc/lemp/menu/tienich/lemp-cai-dat-htop;;
+	11) /etc/lemp/menu/lemp-sao-luu-sys;;
+	12) /etc/lemp/menu/thay-doi-port-ssh;;
+	13) /etc/lemp/menu/tienich/lemp-bat-tat-ssh-time-out;;
+	14) /etc/lemp/menu/lemp-block-exploits-sql-injections-menu;;
+	15) /etc/lemp/menu/lemp-chan-run-script-trong-folder-upload-menu;;
+	16) /etc/lemp/menu/lemp-dat-mat-khau-bao-ve-folder-website;;
+	17) /etc/lemp/menu/tienich/bat-tat-email-thong-bao-dang-nhap-server;;
+	18) /etc/lemp/menu/lemp-bat-tat-tu-dong-chay-lemp;;
+	19) /etc/lemp/menu/lemp-config-canh-bao-dung-luong-disc-trong-free-it;;
+	20) clear && /etc/lemp/menu/tienich/lemp-restart-service;;
+	21) clear && /etc/lemp/menu/tienich/toc-do-dot-net;;
+	22) clear && /etc/lemp/menu/varnish/install-varnish;;
+	23) clear && /etc/lemp/menu/tienich/update-wordpress-for-all-site;;
+	24) clear && /etc/lemp/menu/tienich/install-composer;;
+	25) /etc/lemp/menu/go-bo-scripts;;
+#	23) clear && lemp;;
+	0) clear && lemp;;
+
+
+            *) echo "Ban nhap sai, vui long nhap theo so thu tu tren menu !";continue;;
+
+    esac
+done

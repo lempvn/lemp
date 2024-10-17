@@ -1,0 +1,99 @@
+#!/bin/bash
+. /home/lemp.conf
+
+# Tạo thư mục dự phòng nếu chưa tồn tại
+if [ ! -d /etc/lemp/Backup.Vhost.SSL ]; then
+    mkdir -p /etc/lemp/Backup.Vhost.SSL
+fi
+
+if [ ! -d /etc/lemp/.tmp ]; then
+    mkdir -p /etc/lemp/.tmp
+fi
+
+# Cài đặt acme.sh nếu chưa tồn tại
+if [ ! -f /root/.acme.sh/acme.sh ]; then
+    clear
+    echo "========================================================================="
+    echo "LEMP sẽ cài đặt tiện ích Acme.Sh trước khi chạy chức năng này"
+    echo "-------------------------------------------------------------------------"
+    echo "Please wait ..."; sleep 5
+    wget -O - https://get.acme.sh | sh
+    rm -rf /etc/lemp/.tmp/check_crontab_acme
+    crontab -l > /etc/lemp/.tmp/check_crontab_acme
+    if [ ! "$(grep "/root/.acme.sh" /etc/lemp/.tmp/check_crontab_acme)" = "" ]; then
+        /root/.acme.sh/acme.sh --uninstallcronjob
+    fi
+    rm -rf /etc/lemp/.tmp/check_crontab_acme
+    sleep 3
+    clear
+    echo "========================================================================="
+    echo "Cài đặt acme.sh hoàn thành"
+    echo "-------------------------------------------------------------------------"
+    echo "Bây giờ bạn có thể sử dụng chức năng cài đặt SSL cho website của mình."
+    /etc/lemp/menu/23_ssl-free/lemp-letsencrypt-menu
+fi
+
+version=$(/root/.acme.sh/acme.sh --version | awk 'NR==2' | sed 's/v//')
+
+show_menu_lets_encrypt () {
+    prompt="Lựa chọn của bạn (0-Thoát):"
+    options=("Cài Đặt SSL Cho Domain" "Kiểm Tra SSL Của Domain" "Auto Renew SSL" "Renew SSL Cho Domain" "List Domain Cài Đặt SSL" "Remove SSL (Quay lại HTTP)" "Upgrade Acme.sh")
+    printf "=========================================================================\n"
+    printf "                LEMP - Quản Lý VPS/Server by LEMP.VN \n"
+    printf "=========================================================================\n"
+    printf "                        Cài Đặt SSL - Let's Encrypt \n"
+    echo "========================================================================="
+    echo "                    Powered by Acme.Sh | Version: $version"
+    printf "=========================================================================\n"
+    PS3="$prompt"
+    select opt in "${options[@]}" ; do 
+        case "$REPLY" in
+            1) /etc/lemp/menu/23_ssl-free/lemp-cai-dat-ssl-letsencrypt;;
+            2) /etc/lemp/menu/23_ssl-free/lemp-kiem-tra-ssl-letsencrypt;;
+            3) /etc/lemp/menu/23_ssl-free/lemp-bat-auto-gia-han-letsencrypt;; 
+            4) /etc/lemp/menu/23_ssl-free/lemp-renew-ssl-letsencrypt;;
+            5) /etc/lemp/menu/23_ssl-free/lemp-list-domain-cai-dat-letsencrypt;;
+            6) /etc/lemp/menu/23_ssl-free/lemp-remove-ssl-letsencrypt;;
+            7) /etc/lemp/menu/23_ssl-free/lemp-update-letsencrypt;;
+            8) clear && /bin/lemp;;
+            0) clear && /bin/lemp;;
+            *) echo "Bạn nhập sai, vui lòng nhập theo số thứ tự trên menu!" ; continue;;
+        esac
+    done
+}
+
+check_nginx_service () {
+    if [ "$(systemctl is-active nginx.service)" == "active" ]; then
+        show_menu_lets_encrypt 
+    else
+        clear
+        echo "========================================================================"
+        echo "Dịch vụ Nginx không đang chạy"
+        echo "------------------------------------------------------------------------"
+        echo "LEMP đang cố gắng khởi động nó"
+        echo "------------------------------------------------------------------------"
+        echo "Vui lòng chờ ..."
+        sleep 5 ; clear
+        systemctl start nginx.service
+        clear
+        echo "========================================================================"
+        echo "Kiểm tra lại dịch vụ Nginx một lần nữa!"
+        echo "------------------------------------------------------------------------"
+        echo "Vui lòng chờ ..."
+        sleep 5 ; clear
+        if [ "$(systemctl is-active nginx.service)" == "active" ]; then
+            show_menu_lets_encrypt 
+        else
+            clear
+            echo "========================================================================"
+            echo "LEMP không thể khởi động dịch vụ Nginx"
+            sleep 4 ;
+            clear
+            echo "========================================================================="
+            echo "Rất tiếc, Nginx đang dừng. Hãy bật lên trước khi dùng chức năng này!"
+            /bin/lemp
+        fi
+    fi
+}
+
+check_nginx_service

@@ -1,0 +1,39 @@
+#!/bin/bash 
+. /home/lemp.conf
+
+# Kiểm tra nếu cổng đã bị chặn
+if ufw status | grep -q "$priport/tcp.*DENY"; then
+    clear
+    echo "========================================================================="
+    echo "Phpmyadmin port ($priport) đang CLOSE."
+    echo "-------------------------------------------------------------------------"
+    echo "Bạn không cần re-close port này!"
+    /etc/lemp/menu/5_phpmyadmin/lemp-phpmyadmin-menu
+    exit
+fi
+
+echo "========================================================================="
+echo "Nếu bạn close Phpmyadmin port (port: $priport), bạn sẽ không thể truy cập"
+echo "-------------------------------------------------------------------------"
+echo "Phpmyadmin, xem status và không thể download bất kỳ file nào qua port này"
+echo "-------------------------------------------------------------------------"
+echo "Như: Backup files, Log files..."
+echo "-------------------------------------------------------------------------"
+read -r -p "Bạn muốn CLOSE port $priport? [y/N] " response
+case $response in
+    [yY][eE][sS]|[yY]) 
+        echo "Vui lòng đợi...."; sleep 1
+        clear
+        echo "========================================================================="
+        echo "Close phpmyadmin port ($priport) thành công!"
+        echo "-------------------------------------------------------------------------"
+        sudo ufw deny $priport/tcp  # Chặn cổng qua UFW
+        /etc/lemp/menu/5_phpmyadmin/lemp-phpmyadmin-menu
+        ;;
+    *)
+        clear
+        echo "========================================================================="
+        echo "Bạn hủy CLOSE Phpmyadmin port (Port $priport)"
+        /etc/lemp/menu/5_phpmyadmin/lemp-phpmyadmin-menu
+        ;;
+esac

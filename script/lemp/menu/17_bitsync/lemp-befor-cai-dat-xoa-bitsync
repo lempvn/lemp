@@ -1,0 +1,7 @@
+
+#!/bin/bash
+if [ ! -f /etc/lemp/btsync.info ]; then
+/etc/lemp/menu/17_bitsync/lemp-cai-dat-bitsync
+else
+/etc/lemp/menu/17_bitsync/lemp-xoa-remove-bitsync
+fi

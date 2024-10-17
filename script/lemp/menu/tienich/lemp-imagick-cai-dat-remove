@@ -1,0 +1,71 @@
+#!/bin/bash
+
+. /home/lemp.conf
+
+# Kiểm tra xem imagick đã được cài đặt chưa
+if [ -f /etc/php/8.2/mods-available/imagick.ini ]; then  # Thay đổi php8.2 với phiên bản PHP bạn đang sử dụng
+    echo "========================================================================="
+    echo "Sử dụng chức năng này để Cài đặt / Gỡ bỏ Imagick cho server"
+    echo "-------------------------------------------------------------------------"
+    echo "Server đã cài đặt Imagick"
+    echo "-------------------------------------------------------------------------"
+    read -r -p "Bạn muốn gỡ bỏ Imagick? [y/N] " response
+    case $response in
+        [yY][eE][sS]|[yY]) 
+            echo "-------------------------------------------------------------------------"
+            echo "Xin vui lòng chờ...."; sleep 1
+            sudo rm -rf /etc/php/8.2/mods-available/imagick.ini  # Thay đổi php8.2 với phiên bản PHP bạn đang sử dụng
+            sudo apt remove --purge -y php8.2-imagick  # Thay đổi php8.2 với phiên bản PHP bạn đang sử dụng
+
+            sudo systemctl restart php8.2-fpm.service  # Thay đổi php8.2 với phiên bản PHP bạn đang sử dụng
+            clear
+            echo "========================================================================="
+            echo "Gỡ bỏ Imagick thành công!"
+            /etc/lemp/menu/tienich/lemp-tien-ich
+            ;;
+        *)
+            clear
+            echo "========================================================================="
+            echo "Bạn đã hủy gỡ bỏ IMAGICK"
+            /etc/lemp/menu/tienich/lemp-tien-ich
+            ;;
+    esac
+    exit
+fi
+
+echo "========================================================================="
+echo "Sử dụng chức năng này để Cài đặt / Gỡ bỏ Imagick cho server"
+echo "-------------------------------------------------------------------------"
+echo "Server hiện chưa cài đặt Imagick"
+echo "-------------------------------------------------------------------------"
+read -r -p "Bạn muốn cài đặt Imagick? [y/N] " response
+case $response in
+    [yY][eE][sS]|[yY]) 
+        echo "-------------------------------------------------------------------------"
+        echo "Xin vui lòng chờ...."; sleep 1
+        sudo apt remove --purge -y php8.2-imagick  # Đảm bảo gỡ bỏ nếu đã cài
+        yes "" | sudo apt install php8.2-imagick  # Thay đổi php8.2 với phiên bản PHP bạn đang sử dụng
+        sudo phpenmod imagick  # Kích hoạt extension imagick
+
+        # Kiểm tra và khởi động lại PHP-FPM
+        sudo systemctl restart php8.2-fpm.service  # Thay đổi php8.2 với phiên bản PHP bạn đang sử dụng
+
+        clear
+        echo "========================================================================="
+        echo "Cài đặt IMAGICK thành công!"
+        echo "-------------------------------------------------------------------------"
+        echo "Kiểm tra kết quả cài đặt Imagick:"
+        echo "-------------------------------------------------------------------------"
+        echo "http://$serverip:$priport/check-imagick.php"
+        echo "-------------------------------------------------------------------------"
+        echo "Nếu Imagick cài thành công, trang này sẽ hiện ảnh thông báo của lemp"
+        /etc/lemp/menu/tienich/lemp-tien-ich
+        ;;
+    *)
+        clear
+        echo "========================================================================="
+        echo "Bạn đã hủy cài đặt IMAGICK"
+        /etc/lemp/menu/tienich/lemp-tien-ich
+        ;;
+esac
+exit

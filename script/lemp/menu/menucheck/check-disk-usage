@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Kiểm tra nếu file minfreedisc.info tồn tại, nếu không thì tạo nó với giá trị mặc định
+if [ ! -f /etc/lemp/minfreedisc.info ]; then
+  echo "1000" > /etc/lemp/minfreedisc.info
+fi
+
+# Lấy giá trị minfreedisc
+minfreedisc=$(cat /etc/lemp/minfreedisc.info)
+
+# Kiểm tra giá trị có phải là số hợp lệ không
+if ! [[ "$minfreedisc" =~ ^[0-9]+$ ]]; then
+  echo "1000" > /etc/lemp/minfreedisc.info
+fi
+
+# Tạo file /tmp/checkdiscsize nếu chưa tồn tại
+if [ ! -f /tmp/checkdiscsize ]; then
+  touch /tmp/checkdiscsize
+fi
+
+# Lấy ngày của file /tmp/checkdiscsize
+fileTime3=$(stat -c %d /tmp/checkdiscsize)
+curTime=$(date +%d)
+
+# So sánh ngày của file với ngày hiện tại
+if [ "$fileTime3" != "$curTime" ]; then
+  touch /tmp/checkdiscsize
+
+  # Tính dung lượng đĩa trống
+  disfree=$(df $PWD | awk '/[0-9]%/{print int($(NF-2)/1024)}')
+  echo "========================================================================="
+  echo "Hien tai server con $disfree MB dung luong trong."
+  echo "========================================================================="
+
+  # Kiểm tra giá trị disfree có phải là số hợp lệ không
+  if [[ "$disfree" =~ ^[0-9]+$ ]]; then
+    # So sánh dung lượng trống với giá trị minfreedisc
+    if [ "$disfree" -lt "$minfreedisc" ]; then
+      echo "========================================================================="
+      echo "CANH BAO: Hien tai server chi con $disfree MB dung luong trong !"
+    fi
+  fi
+fi

@@ -1,0 +1,97 @@
+#!/bin/bash
+. /home/lemp.conf
+if [ -f /etc/pure-ftpd/pure-ftpd.conf ]; then
+clear
+echo "========================================================================= "
+echo "FTP server da duoc cai dat tren server. "
+/etc/lemp/menu/ftpserver/lemp-ftpserver-menu
+exit
+fi
+
+clear
+echo "========================================================================= "
+echo "Chuan bi cai dat FTP Server... "
+sleep 3
+sudo DEBIAN_FRONTEND=noninteractive apt -yqq install pure-ftpd
+
+cp /etc/pure-ftpd/pure-ftpd.conf /etc/pure-ftpd/pure-ftpd.conf.bak
+
+# Chinh lai cau hinh
+#sed -i 's/ChrootEveryone/#ChrootEveryone/g' /etc/pure-ftpd/pure-ftpd.conf
+#sed -i 's/VerboseLog/#VerboseLog/g' /etc/pure-ftpd/pure-ftpd.conf
+#sed -i 's/NoAnonymous/#NoAnonymous/g' /etc/pure-ftpd/pure-ftpd.conf
+
+sed -i -e "/UseFtpUsers/d" /etc/pure-ftpd/pure-ftpd.conf
+
+# Cau hinh chung cho Ubuntu
+
+sed -i 's/^#\s*UnixAuthentication\s*yes/UnixAuthentication yes/' /etc/pure-ftpd/pure-ftpd.conf
+
+sed -i 's/^VerboseLog\s*no/VerboseLog yes/' /etc/pure-ftpd/pure-ftpd.conf
+sed -i 's/^#\s*CreateHomeDir\s*yes/CreateHomeDir yes/' /etc/pure-ftpd/pure-ftpd.conf
+sed -i 's/^NoAnonymous\s*no/NoAnonymous yes/' /etc/pure-ftpd/pure-ftpd.conf
+sed -i 's/^#\s*PureDB\s*.*/PureDB \/etc\/pure-ftpd\/pureftpd.pdb/' /etc/pure-ftpd/pure-ftpd.conf
+sed -i 's/^#\s*TLS\s*/TLS /' /etc/pure-ftpd/pure-ftpd.conf
+sed -i 's/^# TLSCipherSuite/TLSCipherSuite/' /etc/pure-ftpd/pure-ftpd.conf
+sed -i 's/^#\s*PassivePortRange\s*/PassivePortRange /' /etc/pure-ftpd/pure-ftpd.conf
+
+
+echo "
+ChrootEveryone yes
+UnixAuthentication yes
+VerboseLog yes
+CreateHomeDir yes
+NoAnonymous yes
+PureDB /etc/pure-ftpd/pureftpd.pdb
+PassivePortRange          30000 50000
+TLS 1
+" >> /etc/pure-ftpd/pure-ftpd.conf ;
+
+openssl req -x509 -nodes -days 7200 -newkey rsa:2048 -keyout /etc/ssl/private/pure-ftpd.pem -out /etc/ssl/private/pure-ftpd.pem -subj "/C=US/ST=lemp FTP/L=lemp FTP/O=lemp FTP/CN=lemp FTP"
+
+#openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/ssl/private/pure-ftpd.pem -out /etc/ssl/private/pure-ftpd.pem -days 365 -subj "/C=US/ST=lemp FTP/L=lemp FTP/O=lemp FTP/CN=lemp FTP"
+
+if [ ! "$(grep /etc/ssl/private/pure-ftpd.pem /etc/pure-ftpd/pure-ftpd.conf)" == "" ]; then
+echo "
+CertFile                 /etc/ssl/private/pure-ftpd.pem
+TLSCipherSuite               HIGH
+" >> /etc/pure-ftpd/pure-ftpd.conf ;
+fi
+
+if [ ! -f /etc/lemp/pure-ftpd.pem ]; then
+if [ -f /etc/ssl/private/pure-ftpd.pem ]; then
+yes | cp -rf /etc/ssl/private/pure-ftpd.pem /etc/lemp/pure-ftpd.pem
+fi
+fi
+
+cp /etc/pure-ftpd/pure-ftpd.conf /etc/pure-ftpd/pure-ftpd.conf.done
+
+systemctl enable pure-ftpd 
+systemctl start pure-ftpd 
+systemctl restart pure-ftpd 
+
+# Cau hinh UFW
+ufw allow 30000:50000/tcp
+ufw allow 30000:50000/udp
+ufw allow 21/tcp
+ufw allow 21/udp
+ufw reload
+
+# Neu CSF FireWall duoc cai dat
+if [ -f /etc/csf/csf.conf ]; then
+clear
+echo "-------------------------------------------------------------------------"
+echo "Phat hien CSF FireWall dang duoc cai dat tren VPS"
+echo "-------------------------------------------------------------------------"
+echo "LEMP se khoi dong lai CSF Firewall ...."
+echo "-------------------------------------------------------------------------"
+echo "Please wait ...."
+sleep 5
+/etc/lemp/menu/CSF-Fiwall/lemp-re-start-khoi-dong-lai-csf-lfd
+fi
+
+clear
+echo "========================================================================= "
+echo "Cai dat FTP server thanh cong"
+/etc/lemp/menu/ftpserver/lemp-ftpserver-menu
+exit

@@ -1,0 +1,20 @@
+#!/bin/bash
+. /home/lemp.conf
+
+# Kiểm tra xem Redis có đang chạy trên Ubuntu không
+if [ "$(systemctl is-active redis.service)" == "active" ]; then
+    clear
+    /etc/lemp/menu/redis/lemp-tat-redis
+    exit
+else
+    clear
+    /etc/lemp/menu/redis/lemp-bat-redis
+    exit
+fi
+
+# Nếu không phát hiện Redis
+clear
+echo "========================================================================="
+echo "Xin lỗi, LEMP không phát hiện Redis Cache trên hệ thống!"
+lemp
+exit
