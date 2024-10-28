@@ -3,7 +3,7 @@
 if [ -f /etc/php.d/opcache.ini ]; then
 clear
 echo "========================================================================="
-echo "               LEMP - Manage VPS/Server by VPS.VN      "       
+echo "               LEMP - Manage VPS/Server by LEMP.VN      "       
 echo "========================================================================="
 echo "                        Cau hinh Zend OPcache"
 echo "========================================================================="

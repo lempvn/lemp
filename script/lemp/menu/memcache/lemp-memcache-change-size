@@ -1,7 +1,7 @@
 #!/bin/bash
 . /home/lemp.conf
 
-# Kiểm tra trạng thái Memcached
+# Kiem tra trang thai Memcached
 if [ ! "$(systemctl is-active memcached.service)" == "active" ]; then
     clear
     echo "========================================================================= "
@@ -41,7 +41,7 @@ if [ -f /etc/memcached.conf ]; then
     echo "Please wait ..."
     sleep 1
     
-    # Xóa file cấu hình cũ
+    # Xoa file cau hinh cu
     rm -rf /etc/memcached.conf
     cat > "/etc/memcached.conf" <<END
 # memcached default config file
@@ -91,7 +91,7 @@ logfile /var/log/memcached.log
 
 END
 
-    # Khởi động lại Memcached
+    # Khoi dong lai Memcached
     systemctl restart memcached.service
     clear
     echo "========================================================================="

@@ -1,7 +1,7 @@
 #!/bin/bash
 . /home/lemp.conf
 
-# Kiểm tra trạng thái của nginx
+# Kiem tra trang thai cua nginx
 if [ "$(systemctl is-active nginx)" == "active" ]; then
     clear
     echo "========================================================================"
@@ -26,7 +26,7 @@ else
     echo "Please wait ..."
     sleep 5; clear
 
-    # Kiểm tra lại trạng thái sau khi khởi động
+    # Kiem tra lai trang thai sau khi khoi dong
     if [ "$(systemctl is-active nginx)" == "active" ]; then
         clear
         echo "========================================================================"
@@ -39,7 +39,7 @@ else
         sleep 4
         clear
         echo "========================================================================="
-        echo "Rất tiếc, LEMP không thể khởi động lại Nginx!"
+        echo "Rat tiec, LEMP khong the khoi dong lai Nginx!"
         /etc/lemp/menu/tienich/lemp-restart-service
     fi
 fi

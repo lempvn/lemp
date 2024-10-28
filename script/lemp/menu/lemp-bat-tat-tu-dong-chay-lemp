@@ -24,7 +24,7 @@ if [ "$(grep "/bin/lemp" /root/.bash_profile)" == "" ]; then
             echo "-------------------------------------------------------------------------"
             echo "Please wait ... "
             sleep 1
-            # Thêm lệnh vào đầu tệp
+            # Them lenh vao dau tep
             sed -i "1i\/bin/lemp" /root/.bash_profile
             clear
             echo "========================================================================="

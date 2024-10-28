@@ -9,9 +9,9 @@ if [ ! -f /etc/lemp/tatthongbao.csf ]; then
         echo "========================================================================="
         echo "Chuc nang [ Tat/Bat Canh Bao Tren Menu ] trong [ Quan Ly CSF Firewall ] "
     else
-        # Thông báo khi CSF đã được cài đặt
+        # Thong bao khi CSF da duoc cai dat
         echo "========================================================================="
-        echo "CSF Firewall đã được cài đặt."
+        echo "CSF Firewall da duoc cai dat."
         echo "========================================================================="
     fi
 fi

@@ -1,17 +1,17 @@
 #!/bin/bash 
 
-if [ -f /etc/pure-ftpd/pure-ftpd.conf ]; then
+if [ -f /etc/proftpd/proftpd.conf ]; then
     echo "========================================================================= "
     read -r -p "Ban muon remove FTP server ? [y/N] " response
     case $response in
         [yY][eE][sS]|[yY]) 
             echo "Chuan bi Remove FTP Server ... "
             sleep 1
-            sudo DEBIAN_FRONTEND=noninteractive apt -yqq purge pure-ftpd*  
-            rm -rf /etc/pure-ftpd
+            sudo DEBIAN_FRONTEND=noninteractive apt -yqq purge proftpd proftpd-basic proftpd-core proftpd-doc proftpd-mod-crypto proftpd-mod-wrap 
+            rm -rf /etc/proftpd
             rm -rf /etc/lemp/FTP-Account.info
             
-            # Tạo lại tệp FTP-Account.info nếu nó không tồn tại
+            # Tao lai tep FTP-Account.info neu no khong ton tai
             if [ ! -f /etc/lemp/FTP-Account.info ]; then
                 {
                     echo "========================================================================="
@@ -26,11 +26,9 @@ if [ -f /etc/pure-ftpd/pure-ftpd.conf ]; then
             fi
             
             clear
-            # Chặn cổng 21 bằng ufw
-            sudo ufw deny 21/udp
-			sudo ufw deny 21/tcp
-			sudo ufw deny 30000:50000/tcp
-			sudo ufw deny 30000:50000/udp
+            # Xoa cong 2222 bang ufw
+            sudo ufw delete allow 2222/tcp
+
             ;;
         *)
             clear 

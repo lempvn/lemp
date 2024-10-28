@@ -1,26 +1,26 @@
 #!/bin/bash
 
-# Thiết lập cấu hình bộ nhớ đệm Varnish
+# Thiet lap cau hinh bo nho dem Varnish
 if [ ! -f /etc/default/varnish ]; then
     yes | cp -rf /etc/lemp/menu/varnish/sysconfig.txt /etc/default/varnish
 fi
 chmod 644 /etc/default/varnish
 
-# Xóa dòng dung lượng cũ
+# Xoa dong dung luong cu
 #sed -i -e "/VARNISH_STORAGE_SIZE=/d" /etc/default/varnish
-# Xóa các dòng trống
+# Xoa cac dong trong
 #sed -i -e "/^$/d" /etc/default/varnish
-# Xóa tất cả các khoảng trắng ở cuối dòng
+# Xoa tat ca cac khoang trang o cuoi dong
 #sed -i -e "s/ *$//" /etc/default/varnish
 
-# Thay bằng dòng mới
+# Thay bang dong moi
 checktruenumber='^[0-9]+$'
 
-# Lấy dung lượng theo cấu hình của người dùng
+# Lay dung luong theo cau hinh cua nguoi dung
 if [ -f /etc/lemp/varnish.storage ]; then
     varnish_size=$(cat /etc/lemp/varnish.storage)
 else
-    # Tính dung lượng Varnish cache đang sử dụng
+    # Tinh dung luong Varnish cache dang su dung
     if [ -f /var/lib/varnish/varnish_storage.bin ]; then
         current_varnish_storage=$(ls -l /var/lib/varnish/varnish_storage.bin | awk '{print $5}')
         current_varnish_storage=$(($current_varnish_storage / 1024 / 1024 / 1024))
@@ -28,10 +28,10 @@ else
         current_varnish_storage=0
     fi
 
-    # Tính toán dung lượng ổ đĩa còn dùng
+    # Tinh toan dung luong o dia con dung
     disfree=$(df --block-size=1G / | awk 'NR==2 {print $4}')
     echo "Disk free: $disfree G"
-    diskrecommended=$(($disfree / 2))  # Giả sử bạn muốn đề xuất 50% dung lượng ổ đĩa miễn phí
+    diskrecommended=$(($disfree / 2))  # Gia su ban muon de xuat 50% dung luong o dia mien phi
 
     varnish_size=$(($current_varnish_storage + $diskrecommended))
     varnish_size=$(($varnish_size - 3))
@@ -42,7 +42,7 @@ if ! [[ $varnish_size =~ $checktruenumber ]]; then
     varnish_size=12
 fi
 
-# Ghi thông tin cấu hình vào tệp /etc/default/varnish
+# Ghi thong tin cau hinh vao tep /etc/default/varnish
 cat > "/etc/default/varnish" << "END"
 NFILES=131072
 MEMLOCK=82000

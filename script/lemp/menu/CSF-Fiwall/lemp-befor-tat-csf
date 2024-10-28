@@ -8,26 +8,26 @@ if [ -f /etc/csf/csf.conf ]; then
     if [ "$test_csf" == "inactive" ]; then
         clear
         echo "========================================================================= "
-        echo "CSF đang tắt trên server!"
+        echo "CSF dang tat tren server!"
         /etc/lemp/menu/CSF-Fiwall/lemp-csf-firewall-menu
     else
         clear
         echo "========================================================================= "
-        echo "CSF Firewall nên được bật để bảo vệ VPS/Server!"
+        echo "CSF Firewall nen duoc bat de bao ve VPS/Server!"
         echo "-------------------------------------------------------------------------"
-        read -r -p "Bạn muốn tắt CSF FireWall? [y/N] " response
+        read -r -p "Ban muon tat CSF FireWall? [y/N] " response
         case $response in
             [yY][eE][sS]|[yY]) 
                 csf -x
                 clear
                 echo "========================================================================= "
-                echo "Tắt CSF firewall thành công!"
+                echo "Tat CSF firewall thanh cong!"
                 /etc/lemp/menu/CSF-Fiwall/lemp-csf-firewall-menu
                 ;;
             *)
                 clear
                 echo "========================================================================= "
-                echo "Bạn hủy bỏ việc tắt CSF Firewall!"
+                echo "Ban huy bo viec tat CSF Firewall!"
                 /etc/lemp/menu/CSF-Fiwall/lemp-csf-firewall-menu
                 exit
                 ;;

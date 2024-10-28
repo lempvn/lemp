@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Kiểm tra xem file cấu hình của Memcached có tồn tại không
+# Kiem tra xem file cau hinh cua Memcached co ton tai khong
 if [ -f /etc/memcached.conf ]; then
-    # Nếu tồn tại file cấu hình, chạy menu phù hợp
+    # Neu ton tai file cau hinh, chay menu phu hop
     /etc/lemp/menu/memcache/lemp-memcache-menu
 else
-    # Nếu không tồn tại, chạy menu khác
+    # Neu khong ton tai, chay menu khac
     /etc/lemp/menu/memcache/lemp-memcache-menu-no-config
 fi
 

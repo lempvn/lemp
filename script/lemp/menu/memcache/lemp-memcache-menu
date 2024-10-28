@@ -4,7 +4,7 @@
 prompt="Nhap lua chon cua ban:"
 options=()
 
-# Kiểm tra trạng thái của Memcached
+# Kiem tra trang thai cua Memcached
 if [ "$(systemctl is-active memcached.service)" == "active" ]; then
     options=("Disable Memcached" "Restart Memcached" "Config Memcached" "Clear Memcached" "Remove Memcached")
 else
@@ -17,7 +17,7 @@ printf "========================================================================
 printf "                            Quan Ly Memcached \n"
 printf "=========================================================================\n"
 
-# Hiển thị trạng thái Memcached
+# Hien thi trang thai Memcached
 if [ "$(systemctl is-active memcached.service)" == "active" ]; then
     echo "        Memcached Status: Running - Configured RAM Usage: $(/bin/systemctl show memcached.service | grep MemoryLimit | awk -F= '{print $2}') MB"
 else

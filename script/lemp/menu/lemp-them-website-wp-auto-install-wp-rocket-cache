@@ -1,6 +1,9 @@
 #!/bin/bash 
 
 . /home/lemp.conf
+
+PHP_VERSION=$(php -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;")
+
 echo "========================================================================="
 echo "Them Domain + Tu dong cai dat Wordpress + Config Vhost cho WP Rocket Cache"
 echo "-------------------------------------------------------------------------"
@@ -86,26 +89,44 @@ echo "Ban vui long thu lai !"
 /etc/lemp/menu/lemp-them-website-menu
 exit
 fi  
+
+# Chuyen ten website thanh user name quan ly website 
+convert_to_username() {
+    # Thay the dau cham bang dau gach duoi de tao ten nguoi dung hop le
+    webuser=$(echo "$website" | sed 's/\./_/g')
+
+    # Tra ve webuser da chuyen doi
+    echo "$webuser"
+}
+
+# Goi ham va luu gia tri tra ve vao bien moi
+webuser=$(convert_to_username "$website")
+echo "Original website: $website"
+echo "Converted webuser: $webuser"
+
+
 /etc/lemp/menu/lemp-enable-tat-ca-cac-ham-php-php.ini
     cat > "/etc/nginx/conf.d/$website.conf" <<END
 server {
-	    server_name www.$website;
-	    rewrite ^(.*) http://$website\$1 permanent;
-    	}
+    listen 80;
+    server_name www.${website};
+    
+    # Redirect all www traffic to non-www
+    return 301 http://${website}\$request_uri;
+}
 server {
 	    listen   80;
+		server_name $website;
 
-    	access_log off; # 
-        # access_log   /home/$website/logs/access_log; #
-    	error_log off;
-    	# error_log /home/$website/logs/error.log;
+    	access_log /home/$website/logs/access_log;
+    	error_log /home/$website/logs/error.log error;	
     	add_header X-Frame-Options SAMEORIGIN;
 		add_header X-Content-Type-Options nosniff;
 		add_header X-XSS-Protection "1; mode=block";
 		root /home/$website/public_html;
-include /etc/nginx/conf/ddos2.conf;
-	index index.php index.html index.htm;
-    	server_name $website;
+		include /etc/nginx/conf/ddos2.conf;
+		index index.php index.html index.htm;
+
 
 #////////////////////////////////////////////////////////////////
 # Ban chi co the chon 1 trong 4 rule AAA, BBB, CCC, DDD hoac EEE
@@ -156,7 +177,7 @@ include /etc/nginx/conf/staticfiles.conf;
     	location ~ \.php$ {
 		fastcgi_split_path_info ^(.+\.php)(/.+)$;
         include /etc/nginx/fastcgi_params;
-        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_pass unix:/var/run/${webuser}.sock;
         fastcgi_index index.php;
 		fastcgi_connect_timeout 250;
 		fastcgi_send_timeout 250;
@@ -175,6 +196,47 @@ include /etc/nginx/conf/drop.conf;
 
     }
 END
+
+#######################################################################
+cat > "/etc/php/${PHP_VERSION}/fpm/pool.d/${webuser}.conf" << END
+[${webuser}]
+listen = /var/run/${webuser}.sock
+user = ${webuser}
+group = ${webuser}
+
+listen.owner = ${webuser}
+listen.group = www-data
+listen.mode = 0660
+
+pm = dynamic
+pm.max_children = 33
+pm.start_servers = 3
+; Defaul: pm.min_spare_servers + (pm.max_spare_servers - pm.min_spare_servers) / 2
+pm.min_spare_servers = 2
+pm.max_spare_servers = 6
+pm.max_requests = 500
+pm.status_path = /php_status
+request_terminate_timeout = 100s
+pm.process_idle_timeout = 10s;
+request_slowlog_timeout = 4s
+slowlog = /home/lemp.demo/logs/php-fpm-slow.log
+rlimit_files = 131072
+rlimit_core = unlimited
+catch_workers_output = yes
+env[HOSTNAME] = \\$HOSTNAME
+env[PATH] = /usr/local/bin:/usr/bin:/bin
+env[TMP] = /tmp
+env[TMPDIR] = /tmp
+env[TEMP] = /tmp
+php_admin_value[error_log] = /home/lemp.demo/logs/php-fpm-error.log
+php_admin_flag[log_errors] = on
+php_value[session.save_handler] = files
+
+END
+
+
+#######################################################################
+
 mkdir -p /home/$website/errorpage_html && cp -r /etc/lemp/errorpage_html/*.html /home/$website/errorpage_html
 echo "$website" > /tmp/databasename.txt
 #echo $website | sed "s/\./_/" | sed "s/\-/_/" | cut -c1-10  > /tmp/databasename.txt  
@@ -184,7 +246,8 @@ random=`date |md5sum |cut -c '1-4'`
 randomwp=`date |md5sum |cut -c '1-7'`
 dataname=`cat /tmp/databasename.txt | cut -c1-11`_$random
 username=`cat /tmp/databasename.txt | sed "s/\_//" | sed "s/\_//" | sed "s/\_//" | sed "s/\_//" | cut -c1-10`$random
-password=`date |md5sum |cut -c '14-29'`
+#password=`date |md5sum |cut -c '14-29'`
+password=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 24)
 passworduseradmin=`date |md5sum |cut -c '1-15'`
 rm -rf /tmp/databasename.txt
 cat > "/tmp/config.temp" <<END
@@ -233,8 +296,12 @@ echo "" >> /home/DBinfo.txt
     mv wordpress/* ./
     rm -rf wordpress
     rm -rf latest.zip
-    
-chown -R www-data:www-data /home/$website/public_html/
+
+sudo useradd -M -d "/home/$website/public_html" "$webuser"
+sudo usermod -s /bin/bash "$webuser"
+
+chown -R ${webuser}:${webuser} "/home/$website/public_html/" 
+
 find /home/$website/public_html/ -type d -exec chmod g+s {} \;
 \cp -uf /etc/lemp/menu/robots.txt /home/$website/public_html/
 #echo "define('FS_METHOD','direct');" >> /home/$website/public_html/wp-config-sample.php
@@ -248,11 +315,12 @@ wp plugin install no-category-base-wpml --activate --allow-root
 sed -i "/.*DB_COLLATE*./a\//* Authentication Unique Keys and Salts." /home/$website/public_html/wp-config.php
 #echo "define('FS_METHOD','direct');" >> /home/$website/public_html/wp-config.php
 cd
-chown -R www-data:www-data /home/$website/public_html/
+chown -R ${webuser}:${webuser} "/home/$website/public_html/" 
 find /home/$website/public_html/ -type d -exec chmod g+s {} \;
 /etc/lemp/menu/lemp-re-config-cac-ham-php-disable-php.ini
 
 systemctl restart nginx
+systemctl restart php${PHP_VERSION}-fpm.service
 
 clear
 echo "========================================================================="

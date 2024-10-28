@@ -1,8 +1,8 @@
 #!/bin/bash
 prompt="Lua chon cua ban (0-Thoat):"
-options=("Tao Tai Khoan FTP Cho Website" "Vo Hieu Hoa Tai Khoan FTP" "Thay Mat Khau Tai Khoan FTP" "Xem Thong Tin FTP Cua Website" "Cai dat FTP Server" )
+options=("Tao Tai Khoan FTP Cho Website" "Xoa Tai Khoan FTP" "Thay Mat Khau Tai Khoan FTP" "Xem Thong Tin FTP Cua Website" "Cai dat FTP Server" )
 printf "=========================================================================\n"
-printf "                LEMP - Quan Ly VPS/Server by VPS.VN \n"
+printf "                LEMP - Quan Ly VPS/Server by LEMP.VN \n"
 printf "=========================================================================\n"
 printf "                           Quan Ly FTP Server \n"
 printf "=========================================================================\n"

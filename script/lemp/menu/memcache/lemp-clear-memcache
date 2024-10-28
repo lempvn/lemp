@@ -1,7 +1,7 @@
 #!/bin/bash
 . /home/lemp.conf
 
-# Kiểm tra xem Memcached có đang chạy không
+# Kiem tra xem Memcached co dang chay khong
 if [ "$(systemctl is-active memcached.service)" == "active" ]; then
     echo "-------------------------------------------------------------------------"
     echo "Please wait...."; sleep 1

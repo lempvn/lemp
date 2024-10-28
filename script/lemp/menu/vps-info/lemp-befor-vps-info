@@ -2,16 +2,16 @@
 . /home/lemp.conf
 rm -rf /tmp/lemp*
 echo "-------------------------------------------------------------------------"
-echo "Please wait. LEMP đang kiểm tra ..."; sleep 1
+echo "Please wait. LEMP dang kiem tra ..."; sleep 1
 
-# Kiểm tra trạng thái của Memcached
+# Kiem tra trang thai cua Memcached
 if systemctl is-active --quiet memcached; then
-    echo "Memcached: Running | Ram Usage: $(grep CACHESIZE= /etc/memcached.conf | grep -o '[0-9]*') MB" > /tmp/lemp-memcached-info.txt
+    echo "Memcached: Running | Ram Usage: $(grep -oP '(?<=-m )\d+' /etc/memcached.conf) MB" > /tmp/lemp-memcached-info.txt
 else
     echo "Memcached: Stopped" > /tmp/lemp-memcached-info.txt
 fi
 
-# Kiểm tra File Manager
+# Kiem tra File Manager
 #if [ ! -f /etc/lemp/uploadsite ]; then 
 #    echo "File Manager: Not Installed" > /tmp/lemp-filemanager-info.txt
 #else
@@ -19,7 +19,7 @@ fi
 #    echo "File Manager: Installed | Domain: $uploadsite" > /tmp/lemp-filemanager-info.txt
 #fi
 
-# Kiểm tra Net2FTP
+# Kiem tra Net2FTP
 #if [ ! -f /etc/lemp/net2ftpsite.info ]; then 
 #    echo "Net2FTP: Not Installed" > /tmp/lemp-net2ftp-info.txt
 #else
@@ -27,7 +27,7 @@ fi
 #    echo "Net2FTP: Installed | Domain: $net2ftpsite" > /tmp/lemp-net2ftp-info.txt
 #fi
 
-# Kiểm tra NetData
+# Kiem tra NetData
 if [ ! -f /etc/lemp/netdatasite.info ]; then 
     echo "NetData: Not Installed" > /tmp/lemp-netdata-info.txt
 else
@@ -39,7 +39,7 @@ else
     fi
 fi
 
-# Kiểm tra CSF Firewall
+# Kiem tra CSF Firewall
 if [ ! -f "/etc/csf/csf.conf" ]; then
     echo "CSF Firewall: Not Installed" > /tmp/lemp-csf-firewall-info.txt
 else
@@ -51,7 +51,7 @@ else
     fi
 fi
 
-# Kiểm tra MySQL/MariaDB
+# Kiem tra MySQL/MariaDB
 if [ -f /var/lib/mysql/lempCheckDB/db.opt ]; then
     rm -rf /var/lib/mysql/lempCheckDB
 fi
@@ -95,7 +95,7 @@ else
     echo "MySQL Status: Running" > /tmp/lemp-mysql-info.txt
 fi
 
-# Kiểm tra Nginx
+# Kiem tra Nginx
 if systemctl is-active --quiet nginx; then
     echo "Nginx Status: Running" > /tmp/lemp-nginx-info.txt
 else
@@ -125,7 +125,7 @@ else
     fi
 fi
 
-# Kiểm tra PHP-FPM
+# Kiem tra PHP-FPM
 
 PHP_VERSION=$(php -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;")
 

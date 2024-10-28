@@ -127,25 +127,25 @@ sudo sed -i 's/# bind to = \*/bind to = 127.0.0.1/' /opt/netdata/netdata-configs
 # reload nginx
 #systemctl reload nginx
 
-# Dừng netdata
+# Dung netdata
 killall netdata
 
-# Sao chép netdata.service vào systemd
+# Sao chep netdata.service vao systemd
 #yes | cp -rf /usr/local/lemp/netdata/system/netdata.service /etc/systemd/system/ && chmod +x /etc/systemd/system/netdata.service
 
-# Cho systemd biết có dịch vụ mới
+# Cho systemd biet co dich vu moi
 #sudo systemctl daemon-reload
 
-# Bật netdata khởi động cùng hệ thống
+# Bat netdata khoi dong cung he thong
 sudo systemctl enable netdata
 
-# Bắt đầu netdata
+# Bat dau netdata
 sudo systemctl start netdata
 
-# Khởi động lại netdata
+# Khoi dong lai netdata
 sudo systemctl restart netdata
 
-# Tải lại nginx
+# Tai lai nginx
 sudo systemctl reload nginx
 
 

@@ -4,7 +4,7 @@
 prompt="Nhap lua chon cua ban:"
 options=()
 
-# Kiểm tra trạng thái của Memcached
+# Kiem tra trang thai cua Memcached
 if [ "$(systemctl is-active memcached.service)" == "active" ]; then
     options=("Install Memcached")
 elif [ "$(systemctl is-active memcached.service)" == "inactive" ]; then

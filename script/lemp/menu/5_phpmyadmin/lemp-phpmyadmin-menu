@@ -22,7 +22,7 @@ versionshow=`echo "| Version: Unknown"`
 fi
 
 printf "=========================================================================\n"
-printf "                LEMP - Quan Ly VPS/Server by VPS.VN \n"
+printf "                LEMP - Quan Ly VPS/Server by LEMP.VN \n"
 printf "=========================================================================\n"
 printf "                            Quan Ly phpMyAdmin \n"
 printf "=========================================================================\n"

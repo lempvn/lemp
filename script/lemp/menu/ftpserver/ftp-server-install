@@ -1,6 +1,6 @@
 #!/bin/bash
 . /home/lemp.conf
-if [ -f /etc/pure-ftpd/pure-ftpd.conf ]; then
+if [ -f /etc/proftpd/proftpd.conf ]; then
 clear
 echo "========================================================================= "
 echo "FTP server da duoc cai dat tren server. "
@@ -12,70 +12,36 @@ clear
 echo "========================================================================= "
 echo "Chuan bi cai dat FTP Server... "
 sleep 3
-sudo DEBIAN_FRONTEND=noninteractive apt -yqq install pure-ftpd
+sudo DEBIAN_FRONTEND=noninteractive apt -yqq install proftpd proftpd-basic proftpd-core proftpd-doc proftpd-mod-crypto proftpd-mod-wrap
 
-cp /etc/pure-ftpd/pure-ftpd.conf /etc/pure-ftpd/pure-ftpd.conf.bak
+cp /etc/proftpd/proftpd.conf /etc/proftpd/proftpd.conf.bak
 
-# Chinh lai cau hinh
-#sed -i 's/ChrootEveryone/#ChrootEveryone/g' /etc/pure-ftpd/pure-ftpd.conf
-#sed -i 's/VerboseLog/#VerboseLog/g' /etc/pure-ftpd/pure-ftpd.conf
-#sed -i 's/NoAnonymous/#NoAnonymous/g' /etc/pure-ftpd/pure-ftpd.conf
+rm -f /etc/proftpd/proftpd.conf
+rm -f /etc/proftpd/modules.conf
 
-sed -i -e "/UseFtpUsers/d" /etc/pure-ftpd/pure-ftpd.conf
+cp -r /etc/lemp/menu/proftpd/proftpd.conf /etc/proftpd/proftpd.conf
+cp -r /etc/lemp/menu/proftpd/modules.conf /etc/proftpd/modules.conf
 
-# Cau hinh chung cho Ubuntu
+touch /etc/proftpd/sftp.passwd
 
-sed -i 's/^#\s*UnixAuthentication\s*yes/UnixAuthentication yes/' /etc/pure-ftpd/pure-ftpd.conf
+chown proftpd:root /etc/proftpd/sftp.passwd
+chmod 600 /etc/proftpd/sftp.passwd
+mkdir /etc/proftpd/keys
 
-sed -i 's/^VerboseLog\s*no/VerboseLog yes/' /etc/pure-ftpd/pure-ftpd.conf
-sed -i 's/^#\s*CreateHomeDir\s*yes/CreateHomeDir yes/' /etc/pure-ftpd/pure-ftpd.conf
-sed -i 's/^NoAnonymous\s*no/NoAnonymous yes/' /etc/pure-ftpd/pure-ftpd.conf
-sed -i 's/^#\s*PureDB\s*.*/PureDB \/etc\/pure-ftpd\/pureftpd.pdb/' /etc/pure-ftpd/pure-ftpd.conf
-sed -i 's/^#\s*TLS\s*/TLS /' /etc/pure-ftpd/pure-ftpd.conf
-sed -i 's/^# TLSCipherSuite/TLSCipherSuite/' /etc/pure-ftpd/pure-ftpd.conf
-sed -i 's/^#\s*PassivePortRange\s*/PassivePortRange /' /etc/pure-ftpd/pure-ftpd.conf
+sudo ssh-keygen -t rsa -f /etc/proftpd/keys/sftp_host_rsa_key -N ""
+sudo ssh-keygen -t dsa -f /etc/proftpd/keys/sftp_host_dsa_key -N ""
 
+cp -r /etc/lemp/menu/proftpd/limits.conf /etc/proftpd/conf.d/limits.conf
+cp -r /etc/lemp/menu/proftpd/sftpd.conf /etc/proftpd/conf.d/sftpd.conf
+chown proftpd:root /etc/proftpd/conf.d/limits.conf
 
-echo "
-ChrootEveryone yes
-UnixAuthentication yes
-VerboseLog yes
-CreateHomeDir yes
-NoAnonymous yes
-PureDB /etc/pure-ftpd/pureftpd.pdb
-PassivePortRange          30000 50000
-TLS 1
-" >> /etc/pure-ftpd/pure-ftpd.conf ;
+systemctl restart proftpd.service
 
-openssl req -x509 -nodes -days 7200 -newkey rsa:2048 -keyout /etc/ssl/private/pure-ftpd.pem -out /etc/ssl/private/pure-ftpd.pem -subj "/C=US/ST=lemp FTP/L=lemp FTP/O=lemp FTP/CN=lemp FTP"
-
-#openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/ssl/private/pure-ftpd.pem -out /etc/ssl/private/pure-ftpd.pem -days 365 -subj "/C=US/ST=lemp FTP/L=lemp FTP/O=lemp FTP/CN=lemp FTP"
-
-if [ ! "$(grep /etc/ssl/private/pure-ftpd.pem /etc/pure-ftpd/pure-ftpd.conf)" == "" ]; then
-echo "
-CertFile                 /etc/ssl/private/pure-ftpd.pem
-TLSCipherSuite               HIGH
-" >> /etc/pure-ftpd/pure-ftpd.conf ;
-fi
-
-if [ ! -f /etc/lemp/pure-ftpd.pem ]; then
-if [ -f /etc/ssl/private/pure-ftpd.pem ]; then
-yes | cp -rf /etc/ssl/private/pure-ftpd.pem /etc/lemp/pure-ftpd.pem
-fi
-fi
-
-cp /etc/pure-ftpd/pure-ftpd.conf /etc/pure-ftpd/pure-ftpd.conf.done
-
-systemctl enable pure-ftpd 
-systemctl start pure-ftpd 
-systemctl restart pure-ftpd 
 
 # Cau hinh UFW
-ufw allow 30000:50000/tcp
-ufw allow 30000:50000/udp
-ufw allow 21/tcp
-ufw allow 21/udp
-ufw reload
+
+sudo ufw allow 2222/tcp
+
 
 # Neu CSF FireWall duoc cai dat
 if [ -f /etc/csf/csf.conf ]; then

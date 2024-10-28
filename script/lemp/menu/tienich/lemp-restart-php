@@ -1,13 +1,13 @@
 #!/bin/bash
 . /home/lemp.conf
 
-# Kiểm tra và khởi động lại PHP-FPM với nhiều phiên bản
+# Kiem tra va khoi dong lai PHP-FPM voi nhieu phien ban
 if systemctl list-units --type=service | grep -q "php.*-fpm"; then
     echo "========================================================================"
     echo "Restarting PHP-FPM services..."
     echo "------------------------------------------------------------------------"
 
-    # Lặp qua các dịch vụ PHP-FPM và kiểm tra trạng thái
+    # Lap qua cac dich vu PHP-FPM va kiem tra trang thai
     for service in $(systemctl list-units --type=service | grep "php.*-fpm" | awk '{print $1}'); do
         if [ "$(systemctl is-active $service)" == "active" ]; then
             echo "$service is running..."
@@ -41,5 +41,5 @@ else
     echo "========================================================================"
 fi
 
-# Quay lại lệnh /etc/lemp/menu/tienich/lemp-restart-service sau khi script kết thúc
+# Quay lai lenh /etc/lemp/menu/tienich/lemp-restart-service sau khi script ket thuc
 /etc/lemp/menu/tienich/lemp-restart-service

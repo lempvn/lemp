@@ -1,9 +1,9 @@
 # Khong muon nguoi khac truy cap qua IP thi uncoment cau hinh duoi
-#server {
-#listen 80 default_server;
-#server_name _;
-#return 403;
-#}
+server {
+listen 80 default_server;
+server_name _;
+return 403;
+}
 
 server {
 server_name www.lemp.demo;
@@ -12,14 +12,14 @@ rewrite ^(.*) http://lemp.demo$1 permanent;
 server {
 #listen 80 default_server;
 
-access_log off;
-error_log off;
-# error_log /home/lemp.demo/logs/error.log;
+access_log /dev/null;
+
+error_log /home/lemp.demo/logs/error.log error;
+
 root /home/lemp.demo/public_html;
 include /etc/nginx/conf/ddos2.conf;
 index index.php index.html index.htm;
-server_name lemp.demo;   
-
+server_name lemp.demo;
 
 #///////////////////////////////////////////////////////
 #Run all the websites,if you use your rule, comment or delete the line below (AAA)

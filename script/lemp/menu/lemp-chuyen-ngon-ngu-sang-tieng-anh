@@ -1,6 +1,6 @@
 #!/bin/sh
 . /home/lemp.conf
-if [ "$(grep VPS.VN /bin/lemp)" != "" ]; then
+if [ "$(grep LEMP.VN /bin/lemp)" != "" ]; then
 clear
 echo "========================================================================= "
 echo "You are using English Version"

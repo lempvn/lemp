@@ -18,7 +18,7 @@ case $response in
         sudo DEBIAN_FRONTEND=noninteractive apt -yqq full-upgrade
         rm -rf /tmp/*opcache*
         
-        if [ -f /etc/php/${PHP_VERSION}/mods-available/opcache.bak ]; then  # Cập nhật với phiên bản PHP đang sử dụng
+        if [ -f /etc/php/${PHP_VERSION}/mods-available/opcache.bak ]; then  # Cap nhat voi phien ban PHP dang su dung
             yes | cp -rf /etc/php/${PHP_VERSION}/mods-available/opcache.bak /tmp
         fi
         if [ -f /etc/php/${PHP_VERSION}/mods-available/opcache.ini ]; then
@@ -37,7 +37,7 @@ case $response in
         fi
         
         rm -rf /tmp/*opcache*
-        chmod 777 /var/lib/php/sessions/  # Đảm bảo đường dẫn đúng với Ubuntu
+        chmod 777 /var/lib/php/sessions/  # Dam bao duong dan dung voi Ubuntu
         clear
         echo "========================================================================="
         echo "Da cap nhat thanh cong server"

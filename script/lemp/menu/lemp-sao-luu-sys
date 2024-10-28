@@ -1,13 +1,13 @@
 #!/bin/bash
 . /home/lemp.conf
 echo "========================================================================="
-echo "Sử dụng chức năng này để tạo backup cho các file config và Vhost"
+echo "Su dung chuc nang nay de tao backup cho cac file config va Vhost"
 echo "-------------------------------------------------------------------------"
-echo "Danh sách file và folder sẽ được backup: server.cnf, www.conf, php.ini"
+echo "Danh sach file va folder se duoc backup: server.cnf, www.conf, php.ini"
 echo "-------------------------------------------------------------------------"
-echo "php-fpm.conf và Folder Nginx (chứa các file Vhost, SSL ...)" 
+echo "php-fpm.conf va Folder Nginx (chua cac file Vhost, SSL ...)" 
 echo "========================================================================="
-read -r -p "Bạn muốn sao lưu các file config & vhost? [y/N] " response
+read -r -p "Ban muon sao luu cac file config & vhost? [y/N] " response
 case $response in
     [yY][eE][sS]|[yY]) 
         echo "-------------------------------------------------------------------------"
@@ -18,9 +18,9 @@ case $response in
         mkdir -p /usr/local/backup-system
         cp -r /etc/nginx /usr/local/backup-system/
         \cp -uf /etc/my.cnf.d/server.cnf /usr/local/backup-system/
-        \cp -uf /etc/php/*/php.ini /usr/local/backup-system/   # Đường dẫn đến php.ini trên Ubuntu
-        \cp -uf /etc/php/*/fpm/php-fpm.conf /usr/local/backup-system/  # Đường dẫn đến php-fpm.conf trên Ubuntu
-        cp -r /etc/php/*/fpm/pool.d/www.conf /usr/local/backup-system/  # Đường dẫn đến www.conf trên Ubuntu
+        \cp -uf /etc/php/*/php.ini /usr/local/backup-system/   # Duong dan den php.ini tren Ubuntu
+        \cp -uf /etc/php/*/fpm/php-fpm.conf /usr/local/backup-system/  # Duong dan den php-fpm.conf tren Ubuntu
+        cp -r /etc/php/*/fpm/pool.d/www.conf /usr/local/backup-system/  # Duong dan den www.conf tren Ubuntu
         cd /usr/local/backup-system/
         zip -r backupsys.zip *
         mv backupsys.zip /home/$mainsite/private_html/Backupconfigandvhost-$backupsys.zip
@@ -36,7 +36,7 @@ case $response in
     *)
        clear
        echo "========================================================================= "
-       echo "Hủy bỏ tạo backup cho file config & Vhost."
+       echo "Huy bo tao backup cho file config & Vhost."
        /etc/lemp/menu/tienich/lemp-tien-ich
        ;;
 esac

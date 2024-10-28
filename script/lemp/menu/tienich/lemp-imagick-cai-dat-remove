@@ -2,31 +2,31 @@
 
 . /home/lemp.conf
 
-# Kiểm tra xem imagick đã được cài đặt chưa
-if [ -f /etc/php/8.2/mods-available/imagick.ini ]; then  # Thay đổi php8.2 với phiên bản PHP bạn đang sử dụng
+# Kiem tra xem imagick da duoc cai dat chua
+if [ -f /etc/php/8.2/mods-available/imagick.ini ]; then  # Thay doi php8.2 voi phien ban PHP ban dang su dung
     echo "========================================================================="
-    echo "Sử dụng chức năng này để Cài đặt / Gỡ bỏ Imagick cho server"
+    echo "Su dung chuc nang nay de Cai dat / Go bo Imagick cho server"
     echo "-------------------------------------------------------------------------"
-    echo "Server đã cài đặt Imagick"
+    echo "Server da cai dat Imagick"
     echo "-------------------------------------------------------------------------"
-    read -r -p "Bạn muốn gỡ bỏ Imagick? [y/N] " response
+    read -r -p "Ban muon go bo Imagick? [y/N] " response
     case $response in
         [yY][eE][sS]|[yY]) 
             echo "-------------------------------------------------------------------------"
-            echo "Xin vui lòng chờ...."; sleep 1
-            sudo rm -rf /etc/php/8.2/mods-available/imagick.ini  # Thay đổi php8.2 với phiên bản PHP bạn đang sử dụng
-            sudo apt remove --purge -y php8.2-imagick  # Thay đổi php8.2 với phiên bản PHP bạn đang sử dụng
+            echo "Xin vui long cho...."; sleep 1
+            sudo rm -rf /etc/php/8.2/mods-available/imagick.ini  # Thay doi php8.2 voi phien ban PHP ban dang su dung
+            sudo apt remove --purge -y php8.2-imagick  # Thay doi php8.2 voi phien ban PHP ban dang su dung
 
-            sudo systemctl restart php8.2-fpm.service  # Thay đổi php8.2 với phiên bản PHP bạn đang sử dụng
+            sudo systemctl restart php8.2-fpm.service  # Thay doi php8.2 voi phien ban PHP ban dang su dung
             clear
             echo "========================================================================="
-            echo "Gỡ bỏ Imagick thành công!"
+            echo "Go bo Imagick thanh cong!"
             /etc/lemp/menu/tienich/lemp-tien-ich
             ;;
         *)
             clear
             echo "========================================================================="
-            echo "Bạn đã hủy gỡ bỏ IMAGICK"
+            echo "Ban da huy go bo IMAGICK"
             /etc/lemp/menu/tienich/lemp-tien-ich
             ;;
     esac
@@ -34,37 +34,37 @@ if [ -f /etc/php/8.2/mods-available/imagick.ini ]; then  # Thay đổi php8.2 v�
 fi
 
 echo "========================================================================="
-echo "Sử dụng chức năng này để Cài đặt / Gỡ bỏ Imagick cho server"
+echo "Su dung chuc nang nay de Cai dat / Go bo Imagick cho server"
 echo "-------------------------------------------------------------------------"
-echo "Server hiện chưa cài đặt Imagick"
+echo "Server hien chua cai dat Imagick"
 echo "-------------------------------------------------------------------------"
-read -r -p "Bạn muốn cài đặt Imagick? [y/N] " response
+read -r -p "Ban muon cai dat Imagick? [y/N] " response
 case $response in
     [yY][eE][sS]|[yY]) 
         echo "-------------------------------------------------------------------------"
-        echo "Xin vui lòng chờ...."; sleep 1
-        sudo apt remove --purge -y php8.2-imagick  # Đảm bảo gỡ bỏ nếu đã cài
-        yes "" | sudo apt install php8.2-imagick  # Thay đổi php8.2 với phiên bản PHP bạn đang sử dụng
-        sudo phpenmod imagick  # Kích hoạt extension imagick
+        echo "Xin vui long cho...."; sleep 1
+        sudo apt remove --purge -y php8.2-imagick  # Dam bao go bo neu da cai
+        yes "" | sudo apt install php8.2-imagick  # Thay doi php8.2 voi phien ban PHP ban dang su dung
+        sudo phpenmod imagick  # Kich hoat extension imagick
 
-        # Kiểm tra và khởi động lại PHP-FPM
-        sudo systemctl restart php8.2-fpm.service  # Thay đổi php8.2 với phiên bản PHP bạn đang sử dụng
+        # Kiem tra va khoi dong lai PHP-FPM
+        sudo systemctl restart php8.2-fpm.service  # Thay doi php8.2 voi phien ban PHP ban dang su dung
 
         clear
         echo "========================================================================="
-        echo "Cài đặt IMAGICK thành công!"
+        echo "Cai dat IMAGICK thanh cong!"
         echo "-------------------------------------------------------------------------"
-        echo "Kiểm tra kết quả cài đặt Imagick:"
+        echo "Kiem tra ket qua cai dat Imagick:"
         echo "-------------------------------------------------------------------------"
         echo "http://$serverip:$priport/check-imagick.php"
         echo "-------------------------------------------------------------------------"
-        echo "Nếu Imagick cài thành công, trang này sẽ hiện ảnh thông báo của lemp"
+        echo "Neu Imagick cai thanh cong, trang nay se hien anh thong bao cua lemp"
         /etc/lemp/menu/tienich/lemp-tien-ich
         ;;
     *)
         clear
         echo "========================================================================="
-        echo "Bạn đã hủy cài đặt IMAGICK"
+        echo "Ban da huy cai dat IMAGICK"
         /etc/lemp/menu/tienich/lemp-tien-ich
         ;;
 esac

@@ -1,9 +1,11 @@
 #!/bin/bash
-if [ ! -f /etc/pure-ftpd/pureftpd.passwd ]; then
-touch /etc/pure-ftpd/pureftpd.passwd
+if [ ! -f /etc/proftpd/sftp.passwd ]; then
+touch /etc/proftpd/sftp.passwd
+chown proftpd:root /etc/proftpd/sftp.passwd
+chmod 600 /etc/proftpd/sftp.passwd
 fi
 prompt="Lua chon cua ban (0-Thoat):"
-options=("Tao Tai Khoan FTP Cho Website" "Vo Hieu Hoa Tai Khoan FTP" "Thay Mat Khau Tai Khoan FTP" "Xem Thong Tin FTP Cua Website" "Go bo FTP Server" )
+options=("Tao Tai Khoan FTP Cho Website" "Xoa Hoa Tai Khoan FTP" "Thay Mat Khau Tai Khoan FTP" "Xem Thong Tin FTP Cua Website" "Go bo FTP Server" )
 printf "=========================================================================\n"
 printf "                LEMP - Quan Ly VPS/Server by LEMP.VN \n"
 printf "=========================================================================\n"

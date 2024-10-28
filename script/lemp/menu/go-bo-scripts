@@ -1,29 +1,29 @@
 #!/bin/bash
 echo "========================================================================="
-echo "Sử dụng chức năng này để gỡ bỏ LEMP khỏi máy chủ"
+echo "Su dung chuc nang nay de go bo LEMP khoi may chu"
 echo "-------------------------------------------------------------------------"
-echo "Trong quá trình gỡ bỏ, toàn bộ dữ liệu website, database ... sẽ bị xóa"
+echo "Trong qua trinh go bo, toan bo du lieu website, database ... se bi xoa"
 echo "-------------------------------------------------------------------------"
-echo "Máy chủ sẽ quay trở lại trạng thái như mới."
+echo "May chu se quay tro lai trang thai nhu moi."
 echo "========================================================================="
-read -r -p "Bạn chắc chắn muốn gỡ bỏ LEMP? [y/N] " response
+read -r -p "Ban chac chan muon go bo LEMP? [y/N] " response
 case $response in
     [yY][eE][sS]|[yY]) 
 echo "-------------------------------------------------------------------------"
-echo -n "Nhập [ OK ] để xác nhận: " 
+echo -n "Nhap [ OK ] de xac nhan: " 
 read xacnhan
 if [ ! "$xacnhan" = "OK" ]; then
 clear
 echo "========================================================================="
-echo "Hủy gỡ bỏ LEMP"
+echo "Huy go bo LEMP"
 /etc/lemp/menu/tienich/lemp-tien-ich
 exit
 fi
 echo "-------------------------------------------------------------------------"
-echo "Chuẩn bị gỡ bỏ LEMP, vui lòng đợi ...."
+echo "Chuan bi go bo LEMP, vui long doi ...."
 sleep 2
 
-# Dừng các dịch vụ
+# Dung cac dich vu
 #systemctl stop exim.service 
 #systemctl disable exim.service
 systemctl stop nginx.service 
@@ -35,10 +35,10 @@ systemctl disable php*-fpm.service
 systemctl stop redis.service 
 systemctl disable redis.service 
 
-# Gỡ cài đặt các gói
+# Go cai dat cac goi
 sudo apt-get -y remove --purge mariadb* nginx php* exim mailutils httpd* syslog-ng htop pure-ftpd gcc g++ redis* memcached* unzip zip rar unrar rsync psmisc
 
-# Xóa các tệp và thư mục không cần thiết
+# Xoa cac tep va thu muc khong can thiet
 rm -rf /etc/nginx
 rm -rf /etc/php-fpm.d
 rm -rf /etc/php.d
@@ -55,28 +55,28 @@ rm -rf /etc/pure-ftpd
 rm -rf /etc/motd 
 rm -rf /home/*
 
-# Xóa swap file nếu có
+# Xoa swap file neu co
 if [ -f /swapfile ]; then
     swapoff /swapfile
     rm -rf /swapfile
 fi
 
-# Xóa các tập tin cấu hình CSF nếu có
+# Xoa cac tap tin cau hinh CSF neu co
 if [ -f /etc/csf/csf.conf ]; then
     cd /etc/csf
     sh uninstall.sh
     cd
 fi
 
-# Làm sạch và cập nhật
+# Lam sach va cap nhat
 apt-get clean
 apt-get -y update
 
 clear
 echo "========================================================================="
-echo "Đã hoàn tất mọi thứ...!"
+echo "Da hoan tat moi thu...!"
 echo "-------------------------------------------------------------------------"
-echo "Máy chủ sẽ khởi động lại sau 3 giây để hoàn tất...!"
+echo "May chu se khoi dong lai sau 3 giay de hoan tat...!"
 sleep 3
 reboot
 exit
@@ -84,7 +84,7 @@ exit
     *)
     clear
     echo "========================================================================="
-    echo "Hủy gỡ bỏ LEMP"
+    echo "Huy go bo LEMP"
 /etc/lemp/menu/tienich/lemp-tien-ich
         ;;
 esac

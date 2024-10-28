@@ -33,7 +33,7 @@ if [ "$(grep lempsshconfig /etc/ssh/sshd_config)" == "" ]; then
         sed -i "s/.*ClientAliveInterval.*/ClientAliveInterval\ 30/g" /etc/ssh/sshd_config
         sed -i "s/.*ClientAliveCountMax.*/ClientAliveCountMax\ 100/g" /etc/ssh/sshd_config
 
-        # Kiểm tra phiên bản Ubuntu (hoặc hệ điều hành khác nếu cần)
+        # Kiem tra phien ban Ubuntu (hoac he dieu hanh khac neu can)
         if [ "$(lsb_release -rs)" == "20.04" ]; then
             systemctl restart sshd
         else 
@@ -78,7 +78,7 @@ if [ ! "$(grep lempsshconfig /etc/ssh/sshd_config)" == "" ]; then
         sed -i "s/.*ClientAliveInterval.*/#ClientAliveInterval\ 30/g" /etc/ssh/sshd_config
         sed -i "s/.*ClientAliveCountMax.*/#ClientAliveCountMax\ 100/g" /etc/ssh/sshd_config
 
-        # Khởi động lại dịch vụ SSH
+        # Khoi dong lai dich vu SSH
         if [ "$(lsb_release -rs)" == "20.04" ]; then
             systemctl restart sshd
         else 

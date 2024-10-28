@@ -1,21 +1,21 @@
 #!/bin/bash
 . /home/lemp.conf
 
-# Kiểm tra xem cơ sở dữ liệu lempCheckDB đã tồn tại chưa
+# Kiem tra xem co so du lieu lempCheckDB da ton tai chua
 if [ -f /var/lib/mysql/lempCheckDB/db.opt ]; then
     rm -rf /var/lib/mysql/lempCheckDB
 fi
 
-# Tạo tạm thời cấu hình để tạo cơ sở dữ liệu
+# Tao tam thoi cau hinh de tao co so du lieu
 cat > "/tmp/config.temp" <<END
 CREATE DATABASE lempCheckDB COLLATE utf8_general_ci;
 END
 
-# Thực hiện lệnh tạo cơ sở dữ liệu
+# Thuc hien lenh tao co so du lieu
 mariadb -u root -p$mariadbpass < /tmp/config.temp
 rm -f /tmp/config.temp
 
-# Kiểm tra lại xem cơ sở dữ liệu đã được tạo hay chưa
+# Kiem tra lai xem co so du lieu da duoc tao hay chua
 if [ ! -f /var/lib/mysql/lempCheckDB/db.opt ]; then
     clear
     echo "========================================================================"
@@ -26,11 +26,11 @@ if [ ! -f /var/lib/mysql/lempCheckDB/db.opt ]; then
     echo "Please wait ..."
     sleep 5 ; clear
 
-    # Xóa các file log
+    # Xoa cac file log
     rm -rf /var/lib/mysql/ib_logfile0
     rm -rf /var/lib/mysql/ib_logfile1
 
-    # Khởi động lại MariaDB
+    # Khoi dong lai MariaDB
     echo "Starting MariaDB service..."
     systemctl start mariadb.service
 
@@ -41,7 +41,7 @@ if [ ! -f /var/lib/mysql/lempCheckDB/db.opt ]; then
     echo "Please wait ..."
     sleep 5 ; clear
 
-    # Tạo lại cơ sở dữ liệu sau khi khởi động lại
+    # Tao lai co so du lieu sau khi khoi dong lai
     cat > "/tmp/config.temp" <<END
 CREATE DATABASE lempCheckDB COLLATE utf8_general_ci;
 END
@@ -49,7 +49,7 @@ END
     mariadb -u root -p$mariadbpass < /tmp/config.temp
     rm -f /tmp/config.temp
 
-    # Kiểm tra xem cơ sở dữ liệu đã được tạo chưa
+    # Kiem tra xem co so du lieu da duoc tao chua
     if [ ! -f /var/lib/mysql/lempCheckDB/db.opt ]; then
         clear
         echo "========================================================================"
@@ -57,7 +57,7 @@ END
         sleep 4 ;
         clear
         echo "========================================================================="
-        echo "Sorry, LEMP không thể khởi động được MariaDB Service"
+        echo "Sorry, LEMP khong the khoi dong duoc MariaDB Service"
         /etc/lemp/menu/tienich/lemp-restart-service
     else
         rm -rf /var/lib/mysql/lempCheckDB

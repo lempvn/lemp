@@ -1,43 +1,43 @@
 #!/bin/bash 
 . /home/lemp.conf
 
-# Kiểm tra xem htop đã được cài đặt hay chưa
+# Kiem tra xem htop da duoc cai dat hay chua
 if [ -f /usr/bin/htop ]; then
     clear
     echo "========================================================================= "
-    echo "HTOP đã cài đặt trên server  "
+    echo "HTOP da cai dat tren server  "
     echo "-------------------------------------------------------------------------"
-    echo "Chạy HTOP bằng command: htop "
+    echo "Chay HTOP bang command: htop "
     /etc/lemp/menu/tienich/lemp-tien-ich
     exit
 fi
 
 echo "========================================================================="
-echo "Htop là PM xem trạng thái server tương tự như [ top -c ] nhưng chi tiết hơn"
+echo "Htop la PM xem trang thai server tuong tu nhu [ top -c ] nhung chi tiet hon"
 echo "-------------------------------------------------------------------------"
-echo "Sử dụng chức năng này để cài đặt htop cho server. "
+echo "Su dung chuc nang nay de cai dat htop cho server. "
 echo "-------------------------------------------------------------------------"
-read -r -p "Bạn muốn cài đặt htop?  [y/N] " response
+read -r -p "Ban muon cai dat htop?  [y/N] " response
 case $response in
     [yY][eE][sS]|[yY]) 
         echo "-------------------------------------------------------------------------"
         echo "Please wait ..."; sleep 1
-        # Cài đặt htop trên Ubuntu
+        # Cai dat htop tren Ubuntu
         sudo apt update
         sudo apt install -y htop
 
         if [ -f /usr/bin/htop ]; then
             clear
             echo "========================================================================="
-            echo "Cài đặt HTOP thành công "
+            echo "Cai dat HTOP thanh cong "
             echo "-------------------------------------------------------------------------"
-            echo "Chạy HTOP bằng command: htop "
+            echo "Chay HTOP bang command: htop "
         else
             clear
             echo "========================================================================="
-            echo "Cài đặt htop thất bại"
+            echo "Cai dat htop that bai"
             echo "-------------------------------------------------------------------------"
-            echo "Bạn vui lòng thử lại."
+            echo "Ban vui long thu lai."
         fi
         /etc/lemp/menu/tienich/lemp-tien-ich
         ;;

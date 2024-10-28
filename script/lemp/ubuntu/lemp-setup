@@ -144,7 +144,8 @@ else
 fi
 
 # auto mysql root password
-passrootmysql=`date | md5sum | cut -c '1-20' | fold -w1 | awk '{if (NR % 2) print toupper($0); else print tolower($0);}' ORS=''`
+#passrootmysql=`date | md5sum | cut -c '1-20' | fold -w1 | awk '{if (NR % 2) print toupper($0); else print tolower($0);}' ORS=''`
+passrootmysql=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 24)
 #echo $passrootmysql
 
 # v1
@@ -294,15 +295,15 @@ yes | cp -rf /opt/vps_lemp/script/lemp/nginx.conf /tmp/nginx.conf
 
 cat >> "/root/.bash_profile" <<END
 . /root/.bashrc
-IPlempcheck=$(echo "$SSH_CONNECTION" | cut -d " " -f 1)
-timeloginlempcheck=$(date +"%d %b %Y, %a %r")
-echo "Someone with IP address $IPlempcheck has logged in to $svip on $timeloginlempcheck." 
+
 END
 
 #IPlempcheck=$(echo "$SSH_CONNECTION" | cut -d " " -f 1)
 #timeloginlempcheck=$(date +"%d %b %Y, %a %r")
+#echo "Someone with IP address $IPlempcheck has logged in to $svip on $timeloginlempcheck." 
 
-echo "Someone with IP address $IPlempcheck has logged in to $svip on $timeloginlempcheck."
+
+#echo "Someone with IP address $IPlempcheck has logged in to $svip on $timeloginlempcheck."
 
 
 #cat >> "/root/.bash_profile" <<END
@@ -460,7 +461,7 @@ sudo apt update
 #else
 #sudo yum -y install --repo="mariadb" MariaDB-server
 #sudo yum -y install MariaDB-client MariaDB-common MariaDB-compat MariaDB-devel MariaDB-server MariaDB-shared perl-DBD-MySQL
- sudo DEBIAN_FRONTEND=noninteractive apt -yqq install mariadb-server mariadb-client
+sudo DEBIAN_FRONTEND=noninteractive apt -yqq install mariadb-server mariadb-client
 #fi
 
 #sudo yum -y install exim syslog-ng cronie cronie-anacron
@@ -468,19 +469,19 @@ sudo apt update
 #yum-config-manager --enable remi-php$numPHPmacdinh
 #sudo yum -y install php php-curl php-soap php-cli php-snmp php-pspell redis php-pecl-redis php-gmp php-ldap php-bcmath php-intl php-imap perl-libwww-perl perl-LWP-Protocol-https php-pear-Net-SMTP php-enchant php-common php-fpm php-gd php-devel php-mysql php-pear php-pecl-memcached php-pecl-memcache php-opcache php-pdo php-zlib php-xml php-mbstring php-mcrypt php-xmlrpc php-tidy
 #sudo yum -y install php php-curl php-pecl-zip php-zip php-soap php-cli php-snmp php-pspell php-pecl-redis php-gmp php-ldap php-bcmath php-intl php-imap perl-libwww-perl perl-LWP-Protocol-https php-pear-Net-SMTP php-enchant php-common php-fpm php-gd php-devel php-mysql php-pear php-pecl-memcached php-pecl-memcache php-opcache php-pdo php-zlib php-xml php-mbstring php-mcrypt php-xmlrpc php-tidy
-if [ -f /etc/lemp/menu/nangcap-php/install-php ]; then
-	/etc/lemp/menu/nangcap-php/install-php
-else
+#if [ -f /etc/lemp/menu/nangcap-php/install-php ]; then
+#	/etc/lemp/menu/nangcap-php/install-php
+#else
 echo "Install php module..."
 #sudo apt -y install php-pear
 #sudo pear install Mail
 #sudo pear install Net_SMTP
 sudo DEBIAN_FRONTEND=noninteractive apt -yqq install php8.2 php8.2-curl php8.2-zip php8.2-soap php8.2-cli php8.2-snmp php8.2-pspell php8.2-gmp php8.2-ldap php8.2-bcmath php8.2-intl php8.2-imap libwww-perl liblwp-protocol-https-perl php8.2-enchant php8.2-common php8.2-fpm php8.2-gd php8.2-mysql php-pear php8.2-opcache php8.2-pdo php8.2-xml php8.2-mbstring php8.2-xmlrpc php8.2-tidy php8.2-memcache php8.2-redis php8.2-memcached php8.2-imagick
 
-# Thay đổi phiên bản php trên hệ thống thành bản php8.2
+# Thay doi phien ban php tren he thong thanh ban php8.2
 sudo update-alternatives --set php /usr/bin/php8.2
 #sudo apt -y install php php-curl php-pecl-zip php-zip php-soap php-cli php-snmp php-pspell php-gmp php-ldap php-bcmath php-intl php-imap perl-libwww-perl perl-LWP-Protocol-https php-pear-Net-SMTP php-enchant php-common php-fpm php-gd php-devel php-mysql php-pear php-opcache php-pdo php-zlib php-xml php-mbstring php-mcrypt php-xmlrpc php-tidy
-fi
+
 
 
 #sudo yum -y install memcached
@@ -940,13 +941,14 @@ download_mysql_secure_installation () {
     cp /opt/vps_lemp/script/lemp/mysql_secure_installation /bin/mysql_secure_installation && chmod +x /bin/mysql_secure_installation
 }
 
-# Chạy lệnh tải/copy
+# Chay lenh tai/copy
 download_mysql_secure_installation
 
 
 #wget --no-check-certificate -q https://lemp.com/script/lemp/Softwear/wp-cli.phar
 
-yes | cp -rf /opt/vps_lemp/script/lemp/Softwear/wp-cli.phar wp-cli.phar
+#yes | cp -rf /opt/vps_lemp/script/lemp/Softwear/wp-cli.phar wp-cli.phar
+curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 #wget -q --no-check-certificate https://github.com/vpsvn/vps-vps-software/raw/main/wp-cli.phar
 chmod +x wp-cli.phar
 mv wp-cli.phar /usr/local/bin/wp
@@ -979,7 +981,8 @@ wget -q https://files.phpmyadmin.net/phpMyAdmin/${phpmyadmin_version}/phpMyAdmin
 unzip -q phpMyAdmin-*.zip > /dev/null 2>&1
 yes | cp -rf phpMyAdmin-*/* .
 #rm -rf phpMyAdmin-*
-randomblow=`date |md5sum |cut -c '1-32'`;
+#randomblow=`date |md5sum |cut -c '1-32'`;
+randomblow=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 32)
 sed -e "s|cfg\['blowfish_secret'\] = ''|cfg['blowfish_secret'] = '$randomblow'|" config.sample.inc.php > config.inc.php
 cd
 mkdir -p /var/lib/php/session
@@ -1068,7 +1071,8 @@ sleep 3
 cp -r /etc/lemp/menu/lemp-tao-mat-khau-bao-ve-folder.py /usr/local/bin/htpasswd.py
 chmod 755 /usr/local/bin/htpasswd.py
 rm -rf /etc/nginx/.htpasswd
-matkhaubv=`date |md5sum |cut -c '1-16'`
+#matkhaubv=`date |md5sum |cut -c '1-16'`
+matkhaubv=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 24)
 usernamebv=`echo "${lempemail};" | sed 's/\([^@]*\)@\([^;.]*\)\.[^;]*;[ ]*/\1 \2\n/g' | awk 'NR==1 {print $1}'`
 htpasswd.py -c -b /etc/nginx/.htpasswd $usernamebv $matkhaubv
 chmod -R 644 /etc/nginx/.htpasswd
@@ -1077,7 +1081,7 @@ userdefault="$usernamebv"
 passdefault="$matkhaubv"
 END
 #wget --no-check-certificate -q https://lemp.com/script/lemp/Softwear/status.zip -O /home/lemp.demo/public_html/status.php
-yes | cp -rf /opt/vps_lemp/script/lemp/Softwear/status.zip /home/lemp.demo/public_html/status.php
+yes | cp -rf /opt/vps_lemp/script/lemp/Softwear/status.zip /home/lemp.demo/private_html/status.php
 #rm -rf /etc/lemp/defaulpassword.php
 cat > "/etc/lemp/defaulpassword.php" <<END
 <?php
@@ -1085,7 +1089,7 @@ define('ADMIN_USERNAME','$usernamebv');   // Admin Username
 define('ADMIN_PASSWORD','$matkhaubv');    // Admin Password
 ?>
 END
-sed -i "s/lemp@lemp.com/${lempemail}/g" /home/lemp.demo/public_html/status.php
+sed -i "s/lemp@lemp.com/${lempemail}/g" /home/lemp.demo/private_html/status.php
 ###################################################
 
 # Cai dat CSF
@@ -1129,7 +1133,7 @@ sed -i "s/lemp@lemp.com/${lempemail}/g" /home/lemp.demo/public_html/status.php
 #service iptables save
 #fi
 
-# Mở các port được liệt kê trong FIREWALLLIST
+# Mo cac port duoc liet ke trong FIREWALLLIST
 #FIREWALLLIST="21 22 25 80 443 465 587 $svport 11211"
 #echo $FIREWALLLIST
 #for PORT in ${FIREWALLLIST}; do
@@ -1137,30 +1141,30 @@ sed -i "s/lemp@lemp.com/${lempemail}/g" /home/lemp.demo/public_html/status.php
 #        ufw allow $PORT/tcp
 #        ufw allow $PORT/udp
 #    else
-#        echo "Port $PORT đã được mở"
+#        echo "Port $PORT da duoc mo"
 #    fi
 #done
 
 FIREWALLLIST_TCP="21 22 25 80 443 465 587 $svport"
 
-# Mở cổng TCP
+# Mo cong TCP
 for PORT in ${FIREWALLLIST_TCP}; do
     if ! ufw status | grep -qw "$PORT"; then
         ufw allow $PORT/tcp
     else
-        echo "Port $PORT đã được mở trên TCP"
+        echo "Port $PORT da duoc mo tren TCP"
     fi
 done
 
 
-# Mở port SSH nếu không phải là port 22
+# Mo port SSH neu khong phai la port 22
 current_ssh_port=${SSH_CLIENT##* }
 echo "current_ssh_port: "$current_ssh_port
 if [ ! "$current_ssh_port" = "22" ]; then
     ufw allow $current_ssh_port/tcp
 fi
 
-# Tải lại cấu hình ufw
+# Tai lai cau hinh ufw
 sudo ufw reload
 
 
@@ -1191,7 +1195,7 @@ Quan Ly Zend Opcache: http://$svip:$svport/ocp.php
 
 Quan Ly Memcache: http://$svip:$svport/memcache.php
 
-Xem Server Status: http://$svip/status.php
+Xem Server Status: http://$svip:$svport/status.php
 
 Thong tin dang nhap phpMyadmin, quan ly Zend Opcache, status.php, download backup files ...
 
@@ -1234,7 +1238,7 @@ Sau day la thong tin quan ly server cua ban:
 + Link phpMyAdmin: http://$svip:$svport
 + Quan Ly Zend Opcache: http://$svip:$svport/ocp.php
 + Quan Ly Memcached: http://$svip:$svport/memcache.php
-+ Xem Server Status: http://$svip/status.php
++ Xem Server Status: http://$svip:$svport/status.php
 + Thong tin dang nhap quan ly phpMyadmin,ocp.php, memcache.php, status.php, download backup files ... : 
 Username: $usernamebv  
 Password: $matkhaubv 
@@ -1264,6 +1268,15 @@ clear
 systemctl restart nginx
 systemctl restart php8.2-fpm
 
+. /home/lemp.conf
+
+cat > "/tmp/config.temp" <<END
+drop database sys;
+END
+
+mariadb -u root -p$mariadbpass < /tmp/config.temp
+rm -f /tmp/config.temp
+
 cat > /root/lemp.info << END
 echo "=========================================================================="
 echo "LEMP da hoan tat qua trinh cai dat Server. "
@@ -1276,7 +1289,7 @@ echo "Quan Ly Zend Opcache: http://$svip:$svport/ocp.php"
 echo "--------------------------------------------------------------------------"
 #echo "Quan Ly Memcached: http://$svip:$svport/memcache.php"
 #echo "--------------------------------------------------------------------------"
-echo "Xem Server Status: http://$svip/status.php"
+echo "Xem Server Status: http://$svip:$svport/status.php"
 echo "--------------------------------------------------------------------------"
 echo "Thong tin username & password bao ve phpMyAdmin, ocp.php, status.php ..."
 echo "--------------------------------------------------------------------------"
@@ -1302,9 +1315,9 @@ echo "Link phpMyAdmin: http://$svip:$svport"
 echo "--------------------------------------------------------------------------"
 echo "Quan Ly Zend Opcache: http://$svip:$svport/ocp.php"
 echo "--------------------------------------------------------------------------"
-#echo "Quan Ly Memcached: http://$svip:$svport/memcache.php"
-#echo "--------------------------------------------------------------------------"
-echo "Xem Server Status: http://$svip/status.php"
+echo "Quan Ly Memcached: http://$svip:$svport/memcache.php"
+echo "--------------------------------------------------------------------------"
+echo "Xem Server Status: http://$svip:$svport/status.php"
 echo "--------------------------------------------------------------------------"
 echo "Thong tin username & password bao ve phpMyAdmin, ocp.php, status.php ..."
 echo "--------------------------------------------------------------------------"

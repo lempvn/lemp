@@ -1,52 +1,52 @@
 #!/bin/bash
 
-# Lấy phiên bản Ubuntu
+# Lay phien ban Ubuntu
 ubuntuVersion=$(lsb_release -rs)
 
-# Hàm kiểm tra và chặn IP nếu kết nối quá nhiều
+# Ham kiem tra va chan IP neu ket noi qua nhieu
 check_and_block_ip () {
     LIMIT=$1
 
     for ip in $(awk '{print $1}' /root/ebiplist); do
-        # Kiểm tra số lượng kết nối từ IP
+        # Kiem tra so luong ket noi tu IP
         if [ $(grep -c $ip /root/ebiplist) -gt $LIMIT ]; then
-            # Thông báo và chặn IP
-            echo "Quá nhiều kết nối từ $ip... Auto block"
+            # Thong bao va chan IP
+            echo "Qua nhieu ket noi tu $ip... Auto block"
 
-            # Chặn IP bằng iptables
+            # Chan IP bang iptables
             iptables -A INPUT -s $ip -j DROP
             
-            # Lưu cấu hình iptables
+            # Luu cau hinh iptables
             iptables-save > /etc/iptables/rules.v4
             
-            # Khởi động lại iptables
+            # Khoi dong lai iptables
             systemctl restart netfilter-persistent
-            # Đợi một thời gian để giảm số kết nối
+            # Doi mot thoi gian de giam so ket noi
             sleep 30
         fi
     done
 }
 
-# Tạo file lưu danh sách IP
+# Tao file luu danh sach IP
 if [ ! -f /root/ebiplist ]; then
     touch /root/ebiplist
     chmod 644 /root/ebiplist
 fi
 
-# Giới hạn số lượng kết nối
+# Gioi han so luong ket noi
 LIMIT=250
 
-# Kiểm tra và thu thập danh sách địa chỉ IP kết nối đến cổng 80
+# Kiem tra va thu thap danh sach dia chi IP ket noi den cong 80
 netstat -plan | grep :80 | awk '{print $5}' | cut -d: -f 1 | sort | uniq -c | sort -nr | head > /root/ebiplist
 
 check_and_block_ip $LIMIT
 
-# Kiểm tra và thu thập danh sách địa chỉ IP kết nối đến cổng 443
+# Kiem tra va thu thap danh sach dia chi IP ket noi den cong 443
 netstat -plan | grep :443 | awk '{print $5}' | cut -d: -f 1 | sort | uniq -c | sort -nr | head >> /root/ebiplist
 
 check_and_block_ip $LIMIT
 
-# Kiểm tra và thu thập danh sách địa chỉ IP kết nối đến cổng NFS (2049)
+# Kiem tra va thu thap danh sach dia chi IP ket noi den cong NFS (2049)
 netstat -plan | grep :2049 | awk '{print $5}' | cut -d: -f 1 | sort | uniq -c | sort -nr | head >> /root/ebiplist
 
 check_and_block_ip $LIMIT
@@ -54,5 +54,5 @@ check_and_block_ip $LIMIT
 echo "Kiem tra va chan IP DDoS hoan tat"
 sleep 5
 
-# Gọi script kiểm tra DDoS khác (nếu cần thiết)
+# Goi script kiem tra DDoS khac (neu can thiet)
 # /etc/lemp/menu/lemp-kiem-tra-ddos

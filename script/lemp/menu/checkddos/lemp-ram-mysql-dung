@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Kiểm tra trạng thái dịch vụ MariaDB
+# Kiem tra trang thai dich vu MariaDB
 if systemctl is-active --quiet mariadb; then
     echo "Please wait...."; sleep 1
     clear
     echo "========================================================================="
-    echo "RAM MariaDB sử dụng: $(ps aux | grep mariadb | grep -v "grep" | awk '{ s += $6 } END { print s/1024, "Mb"}')"
+    echo "RAM MariaDB su dung: $(ps aux | grep mariadb | grep -v "grep" | awk '{ s += $6 } END { print s/1024, "Mb"}')"
     /etc/lemp/menu/lemp-check-thong-tin-server
 else
     clear

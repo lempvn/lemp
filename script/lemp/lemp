@@ -8,7 +8,6 @@ if [ $(id -u) != "0" ]; then
 fi
 
 
-
 # Check LEMP Update
 #/etc/lemp/menu/menucheck/check-lemp-update
 # Check nginx Update
@@ -19,63 +18,141 @@ fi
 /etc/lemp/menu/menucheck/check-disk-usage
 
 
+if [ ! -f /etc/lemp/tatthongbao.csf ]; then
+if [ ! -f /etc/csf/csf.conf ]; then
+echo "========================================================================="
+echo "NGUY HIEM ! BAN CHUA CAI DAT CSF FIREWALL DE BAO VE VPS/SERVER !"
+echo "========================================================================="
+echo "Canh bao nay tu dong tat sau khi ban cai dat CSF. Hoac tat bang cach dung"
+echo "========================================================================="
+echo "Chuc nang [ Tat/Bat Canh Bao Tren Menu ] trong [ Quan Ly CSF Firewall ] "
+fi
+fi
+#rm -rf /tmp/*ip*
+who am i| awk '{ print $5}' | sed 's/(//'| sed 's/)//' > /tmp/checkip
+checksize=$(du -sb /tmp/checkip | awk 'NR==1 {print $1}')
+if [ $checksize -gt 8 ]; then
+if [ -f /etc/csf/csf.conf ]; then
+checkip=$(cat /tmp/checkip)
+	if [ ! -f /etc/csf/csf.ignore ]; then
+	echo "" > /etc/csf/csf.ignore
+	fi
+if [ "$(grep $checkip /etc/csf/csf.ignore)" == "" ]; then 
+cat >> "/tmp/addcheckip" <<END
+echo "$checkip" >> /etc/csf/csf.ignore
+echo "$checkip" >> /etc/csf/csf.allow
+echo "========================================================================="
+echo "Dia chi IP hien tai cua ban:  $checkip" 
+echo "-------------------------------------------------------------------------"
+echo "Dia chi IP nay khong co trong whitelist cua CSF Firewwall"
+echo "-------------------------------------------------------------------------"
+echo "LEMP da them IP nay vao CSF whitelist de khong bi CSF Firewall Block"
+echo "-------------------------------------------------------------------------"
+echo "De thay doi co hieu luc, CSF Firewall can khoi dong lai"
+echo "========================================================================="
+read -p "Nhan [Enter] de khoi dong lai CSF Firewall va Truy cap LEMP ..."
+#iptables -I INPUT -p tcp --dport $priport -j ACCEPT
+#iptables -A INPUT -p tcp -s $checkip --dport $priport -j ACCEPT
+#service iptables save
+#service iptables restart
+/etc/lemp/menu/CSF-Fiwall/lemp-re-start-khoi-dong-lai-csf-lfd
+clear
+echo "========================================================================="
+echo "IP: $checkip da duoc them vao CSF Firewall's Whitelist"
+END
+chmod +x /tmp/addcheckip
+/tmp/addcheckip
+fi
+fi
+fi
+
+if [ ! -f /etc/lemp/minfreedisc.info ]; then
+echo "1000" > /etc/lemp/minfreedisc.info
+fi
+minfreedisc=`cat /etc/lemp/minfreedisc.info`
+if ! [[ $minfreedisc =~ $checktruenumber ]] ; then
+echo "1000" > /etc/lemp/minfreedisc.info
+fi 
+if [ ! -f /tmp/checkdiscsize ]; then
+touch -a -m -t 201602180130.09 /tmp/checkdiscsize 
+fi
+fileTime3=$(date -r /tmp/checkdiscsize +%d)
+if [ ! "$fileTime3" == "$curTime" ]; then
+touch /tmp/checkdiscsize
+disfree=$(calc $(df $PWD | awk '/[0-9]%/{print $(NF-2)}')/1024)
+	if [[ $disfree =~ $checktruenumber ]] ; then  
+	  if [ "$disfree" -lt "$minfreedisc" ]; then
+echo "========================================================================="
+echo "CANH BAO: Hien tai server con $disfree MB dung luong trong ! "
+	  fi
+   fi
+fi
+
+
 
 rm -rf /tmp/*ip*
 rm -rf /tmp/showthongbao 
 
 
 #find /etc/lemp/menu -type f -exec chmod 755 {} \;
-prompt="Nhap lua chon cua ban:"
+prompt="Nhap lua chon cua ban (27-Thoat): "
 #options=("Thong tin thiet lap LEMP" "Them Website & Code" "Xoa website" "Backup & Restore Code" "Quan Ly Database" "Quan Ly phpMyAdmin" "Quan Ly Zend OPcache" "Quan Ly Memcached" "Quan Ly Redis Cache" "Quan Ly FTP Server" "Quan Ly Swap" "Quan Ly Cronjob"  "Quan Ly File Log" "Config Cau Hinh PHP" "Wordpress Blog Tools" "Quan Ly CSF Firewall" "Quan Ly IPtables Firewall" "Quan Ly BitTorrent Sync" "Quan Ly VPS Backup" "Linux Malware Detect" "Cai Dat File Manager" "Cai Dat Net2FTP" "Cai Dat NetData" "Cai Dat SSL (Let's Enctypt)" "Check & Block IP DOS" "Tien ich - Addons" "Update System" "Clear All Caches" "User & Password Mac Dinh" "Server Status" "Thoat")
-options=("Them Website & Code" "Xoa website" "Backup & Restore Code" "Quan Ly Database" "Quan Ly phpMyAdmin" "Quan Ly Memcached" "Quan Ly Redis Cache" "Quan Ly FTP Server (dang loi chua ket noi duoc)" "Quan Ly Swap" "Quan Ly Cronjob"  "Quan Ly File Log" "Config Cau Hinh PHP" "Wordpress Blog Tools" "Quan Ly CSF Firewall" "Quan Ly IPtables Firewall" "Quan Ly VPS Backup" "Linux Malware Detect" "Cai Dat NetData" "Cai Dat SSL (Let's Enctypt)" "Check & Block IP DOS" "Tien ich - Addons" "Clear All Caches" "User & Password Mac Dinh" "Server Status" "Bat/Tat IPv6" "Thoat")
+options=("Them Website & Code" "Xoa website" "Backup & Restore Code" "Quan Ly Database" "Quan Ly phpMyAdmin" "Quan Ly Memcached" "Quan Ly Redis Cache" "Quan Ly FTP Server (dang loi chua ket noi duoc)" "Quan Ly Swap" "Quan Ly Cronjob"  "Quan Ly File Log" "Config Cau Hinh PHP" "Thay doi phien ban PHP cho Website" "Wordpress Blog Tools" "Quan Ly CSF Firewall" "Quan Ly IPtables Firewall" "Quan Ly VPS Backup" "Linux Malware Detect" "Cai Dat NetData" "Cai Dat SSL (Let's Enctypt)" "Check & Block IP DOS" "Tien ich - Addons" "Clear All Caches" "User & Password Mac Dinh" "Server Status" "Bat/Tat IPv6" "Thoat")
 
 echo "========================================================================="
-echo "                  LEMP - Quan Ly VPS/Server by VPS.VN                    "
+echo "                  LEMP - Quan Ly VPS/Server by LEMP.VN                    "
 echo "========================================================================="
 echo "                             LEMP Menu                                   "
 echo "========================================================================="
 
-PS3="$prompt"
-select opt in "${options[@]}" ; do 
+# In ra danh sach lua chon theo 2 cot
+column_count=2
+index=1
+for ((i=0; i<${#options[@]}; i+=column_count)); do
+    for ((j=0; j<column_count; j++)); do
+        if [ $((i + j)) -lt ${#options[@]} ]; then
+            printf "%-40s" "$((i + j + 1)). ${options[i + j]}"
+        fi
+    done
+    echo
+done
 
-    case "$REPLY" in
-	#0) /etc/lemp/finishedemail.sh;;
-	1) clear && /etc/lemp/menu/lemp-befor-them-website-menu;;
+PS3="$prompt"
+
+# Lay lua chon tu nguoi dung
+read -p "$PS3" choice
+
+# Kiem tra lua chon va thuc thi hanh dong tuong ung
+case "$choice" in
+    1) clear && /etc/lemp/menu/lemp-befor-them-website-menu;;
     2) /etc/lemp/menu/lemp-befor-xoa-website;;
     3) clear && /etc/lemp/menu/3_backup-restore/lemp-sao-luu;;
     4) clear && /etc/lemp/menu/4_database/lemp-befor-them-xoa-database;;
     5) clear && /etc/lemp/menu/5_phpmyadmin/lemp-phpmyadmin-menu;;
-    # Opcahe tren ubuntu co cai chung voi php-fpm roi nen ko can nua
-	#6) clear && /etc/lemp/menu/opcache/lemp-before-opcache;;
     6) clear && /etc/lemp/menu/memcache/lemp-before-memcache-menu;;
     7) clear && /etc/lemp/menu/redis/lemp-redis-before-menu;;
-    8) clear &&/etc/lemp/menu/ftpserver/lemp-ftpserver-menu;;
-    9 )clear && /etc/lemp/menu/swap/lemp-them-xoa-swap-vps-menu;;
+    8) clear && /etc/lemp/menu/ftpserver/lemp-ftpserver-menu;;
+    9) clear && /etc/lemp/menu/swap/lemp-them-xoa-swap-vps-menu;;
     10) clear && /etc/lemp/menu/crontab/lemp-cronjob-menu;;
     11) clear && /etc/lemp/menu/downloadlog/lemp-error-menu;;
     12) clear && /etc/lemp/menu/config-php/lemp-befor-lemp-config-php.ini-menu;;
-    13) clear && /etc/lemp/menu/lemp-wordpress-tools-menu;;
-    #14) clear && /etc/lemp/menu/pagespeed/before-lemp-pagespeed-menu;;"Nginx Pagespeed Manage" 
-    14) /etc/lemp/menu/CSF-Fiwall/lemp-csf-firewall-before-menu;;
-    15) clear && /etc/lemp/menu/lemp-iptables-firewall-manager-menu;;
-    # 16) clear && /etc/lemp/menu/17_bitsync/lemp-bitsync-menu;; # ngien cuu sau, co the khong can thiet
-    16) clear && /etc/lemp/menu/backup/lemp-befor-rsync;;
-    17) clear && /etc/lemp/menu/lemp-maldet-menu;;
-    #18) clear && /etc/lemp/menu/20_file-manager/lemp-web-upload-menu;;
-    #19) clear && /etc/lemp/menu/21_net2ftp/lemp-net2ftp-menu;;
-    18) clear && /etc/lemp/menu/22_netdata/lemp-netdata-menu;;
-    19) clear && /etc/lemp/menu/23_ssl-free/lemp-letsencrypt-menu;;
-    20) clear && /etc/lemp/menu/lemp-kiem-tra-ddos;;
-    21) clear && /etc/lemp/menu/tienich/lemp-tien-ich;;
+    13) clear && /etc/lemp/menu/nangcap-php/lemp-change-ver-php;;
+    14) clear && /etc/lemp/menu/lemp-wordpress-tools-menu;;
+    15) /etc/lemp/menu/CSF-Fiwall/lemp-csf-firewall-before-menu;;
+    16) clear && /etc/lemp/menu/lemp-iptables-firewall-manager-menu;;
+    17) clear && /etc/lemp/menu/backup/lemp-befor-rsync;;
+    18) clear && /etc/lemp/menu/lemp-maldet-menu;;
+    19) clear && /etc/lemp/menu/22_netdata/lemp-netdata-menu;;
+    20) clear && /etc/lemp/menu/23_ssl-free/lemp-letsencrypt-menu;;
+    21) clear && /etc/lemp/menu/lemp-kiem-tra-ddos;;
+    22) clear && /etc/lemp/menu/tienich/lemp-tien-ich;;
+    23) /etc/lemp/menu/clear-cache/lemp-clear-cache-xoa-cache-server;;
+    24) /etc/lemp/menu/user-secure/dat-mat-khau-bao-ve-folder-mac-dinh;;
+    25) clear && /etc/lemp/menu/vps-info/lemp-vps-info;;
+    26) clear && /etc/lemp/menu/ipv6/bat_tat_ipv6;;
+    27) clear && cat /etc/motd && exit 0;;
+	#14) clear && /etc/lemp/menu/pagespeed/before-lemp-pagespeed-menu;;"Nginx Pagespeed Manage" 
     #22) clear && /etc/lemp/menu/lemp-update-upgrade-service-menu;; # nang cap sau
-    22) /etc/lemp/menu/clear-cache/lemp-clear-cache-xoa-cache-server;;
-    23) /etc/lemp/menu/user-secure/dat-mat-khau-bao-ve-folder-mac-dinh;;
-    24) clear && /etc/lemp/menu/vps-info/lemp-vps-info;;
-	25) clear && /etc/lemp/menu/ipv6/bat_tat_ipv6;;
-	26) clear && cat /etc/motd && killall -g lemp;; 
-	0) clear && cat /etc/motd && killall -g lemp;; 
-    *) echo "Ban nhap sai, vui long nhap theo so thu tu tren menu !";continue;;
+    *) echo "Ban nhap sai, vui long nhap so tu 1 den 27!";;
+esac
 
-    esac
-done
- 

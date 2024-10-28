@@ -2,7 +2,7 @@
 prompt="Nhap lua chon cua ban (0-Thoat):"
 options=( "Thoat")
 printf "=========================================================================\n"
-printf "               LEMP - Manage VPS/Server by VPS.VN \n"
+printf "               LEMP - Manage VPS/Server by LEMP.VN \n"
 printf "=========================================================================\n"
 printf "                      Backup & Restore Database\n"
 printf "=========================================================================\n"

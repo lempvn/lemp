@@ -2,7 +2,7 @@
 clear
 
 printf "=========================================================================\n"
-printf "            LEMP - Manage VPS/Server by VPS.VN \n"
+printf "            LEMP - Manage VPS/Server by LEMP.VN \n"
 printf "=========================================================================\n"
 printf "                       Fix Loi chmod & chown                               \n"
 printf "=========================================================================\n"

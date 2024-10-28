@@ -4,7 +4,7 @@
 UBUNTU_VERSION=$(grep VERSION /etc/os-release | cut -d'=' -f2 | tr -d '"')
 clear
 printf "=========================================================================\n"
-printf "               LEMP - Quan Ly VPS/Server by VPS.VN \n"
+printf "               LEMP - Quan Ly VPS/Server by LEMP.VN \n"
 printf "=========================================================================\n"
 printf "                            Server Status \n"
 printf "=========================================================================\n"
@@ -29,17 +29,15 @@ else
 echo "-------------------------------------------------------------------------"
 echo "PhpmyAdmin Link: Off"
 fi
-echo "$(cat /tmp/lemp-filemanager-info.txt)"
-echo "$(cat /tmp/lemp-net2ftp-info.txt)"
 echo "$(cat /tmp/lemp-netdata-info.txt)"
 echo "-------------------------------------------------------------------------"
-if [ -f "/etc/php.d/opcache.ini" ]; then
-ramzenduse=$(grep opcache.memory_consumption /etc/php.d/opcache.ini | grep -o '[0-9]*')
-cleartime=$(grep opcache.revalidate_freq /etc/php.d/opcache.ini | grep -o '[0-9]*')
-echo "Zend Opcache: On | Ram Usage: $ramzenduse MB | Auto Clear Time: $cleartime S"
-else
-echo "Zend Opcache: Off"
-fi
+#if [ -f "/etc/php.d/opcache.ini" ]; then
+#ramzenduse=$(grep opcache.memory_consumption /etc/php.d/opcache.ini | grep -o '[0-9]*')
+#cleartime=$(grep opcache.revalidate_freq /etc/php.d/opcache.ini | grep -o '[0-9]*')
+#echo "Zend Opcache: On | Ram Usage: $ramzenduse MB | Auto Clear Time: $cleartime S"
+#else
+#echo "Zend Opcache: Off"
+#fi
 if [ -f "/tmp/lemp-memcached-info.txt" ]; then
 echo "$(cat /tmp/lemp-memcached-info.txt)"
 fi

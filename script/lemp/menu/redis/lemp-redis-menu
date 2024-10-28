@@ -1,35 +1,35 @@
 #!/bin/bash
 . /home/lemp.conf
 
-prompt="Nhập lựa chọn của bạn: "
+prompt="Nhap lua chon cua ban: "
 options=()
 redistatus=""
 
-# Kiểm tra trạng thái dịch vụ Redis
+# Kiem tra trang thai dich vu Redis
 if [ "$(systemctl is-active redis.service)" == "active" ]; then
-    options=("Vô hiệu hóa Redis Cache" "Xóa Redis Cache" "Cấu hình Redis Cache" "Kiểm tra Redis Status" "Gỡ cài đặt Redis Cache")
-    redistatus="Đang hoạt động"
+    options=("Vo hieu hoa Redis Cache" "Xoa Redis Cache" "Cau hinh Redis Cache" "Kiem tra Redis Status" "Go cai dat Redis Cache")
+    redistatus="Dang hoat dong"
 else
-    options=("Kích hoạt Redis Cache" "Xóa Redis Cache" "Cấu hình Redis Cache" "Kiểm tra Redis Status" "Gỡ cài đặt Redis Cache")
-    redistatus="Đã dừng"
+    options=("Kich hoat Redis Cache" "Xoa Redis Cache" "Cau hinh Redis Cache" "Kiem tra Redis Status" "Go cai dat Redis Cache")
+    redistatus="Da dung"
 fi
 
-# Hiển thị thông tin Redis
+# Hien thi thong tin Redis
 printf "=========================================================================\n"
-printf "                LEMP - Quản Lý VPS/Server by LEMP.VN \n"
+printf "                LEMP - Quan Ly VPS/Server by LEMP.VN \n"
 printf "=========================================================================\n"
-printf "                           Quản Lý Redis Cache                                \n"
+printf "                           Quan Ly Redis Cache                                \n"
 printf "=========================================================================\n"
 printf "          Redis: $redistatus - Ram Max: $(grep -E "^[^#]*maxmemory " /etc/redis/redis.conf | awk '{print $2}' | sed 's/mb//') M "
 if [ "$(systemctl is-active redis.service)" == "active" ]; then
-    printf " - Ram Đang Sử Dụng: $(redis-cli INFO | grep used_memory_human | sed 's/used_memory_human://') \n"
+    printf " - Ram Dang Su Dung: $(redis-cli INFO | grep used_memory_human | sed 's/used_memory_human://') \n"
 else
     printf "\n"
 fi
 printf "=========================================================================\n"
 
 PS3="$prompt"
-select opt in "${options[@]}" "Thoát"; do 
+select opt in "${options[@]}" "Thoat"; do 
     case "$REPLY" in
         1) /etc/lemp/menu/redis/lemp-before-bat-tat-redis;;
         2) /etc/lemp/menu/redis/lemp-clear-redis;;
@@ -39,7 +39,7 @@ select opt in "${options[@]}" "Thoát"; do
         $(( ${#options[@]} + 1 )) ) 
             echo ""; clear && /bin/lemp;;
         *) 
-            echo "Bạn nhập sai, vui lòng nhập theo số thứ tự trên menu!"
+            echo "Ban nhap sai, vui long nhap theo so thu tu tren menu!"
             continue;;
     esac
 done

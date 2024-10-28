@@ -467,7 +467,7 @@ echo "Install php module..."
 #sudo pear install Net_SMTP
 sudo DEBIAN_FRONTEND=noninteractive apt -yqq install php8.2 php8.2-curl php8.2-zip php8.2-soap php8.2-cli php8.2-snmp php8.2-pspell php8.2-gmp php8.2-ldap php8.2-bcmath php8.2-intl php8.2-imap libwww-perl liblwp-protocol-https-perl php8.2-enchant php8.2-common php8.2-fpm php8.2-gd php8.2-mysql php-pear php8.2-opcache php8.2-pdo php8.2-xml php8.2-mbstring php8.2-xmlrpc php8.2-tidy php8.2-memcache php8.2-redis php8.2-memcached php8.2-imagick
 
-# Thay đổi phiên bản php trên hệ thống thành bản php8.2
+# Thay doi phien ban php tren he thong thanh ban php8.2
 sudo update-alternatives --set php /usr/bin/php8.2
 #sudo apt -y install php php-curl php-pecl-zip php-zip php-soap php-cli php-snmp php-pspell php-gmp php-ldap php-bcmath php-intl php-imap perl-libwww-perl perl-LWP-Protocol-https php-pear-Net-SMTP php-enchant php-common php-fpm php-gd php-devel php-mysql php-pear php-opcache php-pdo php-zlib php-xml php-mbstring php-mcrypt php-xmlrpc php-tidy
 fi
@@ -928,7 +928,7 @@ download_mysql_secure_installation () {
     cp /opt/vps_lemp/script/lemp/mysql_secure_installation /bin/mysql_secure_installation && chmod +x /bin/mysql_secure_installation
 }
 
-# Chạy lệnh tải/copy
+# Chay lenh tai/copy
 download_mysql_secure_installation
 
 
@@ -1118,7 +1118,7 @@ sed -i "s/lemp@lemp.com/${lempemail}/g" /home/lemp.demo/public_html/status.php
 #service iptables save
 #fi
 
-# Mở các port được liệt kê trong FIREWALLLIST
+# Mo cac port duoc liet ke trong FIREWALLLIST
 #FIREWALLLIST="21 22 25 80 443 465 587 $svport 11211"
 #echo $FIREWALLLIST
 #for PORT in ${FIREWALLLIST}; do
@@ -1126,41 +1126,41 @@ sed -i "s/lemp@lemp.com/${lempemail}/g" /home/lemp.demo/public_html/status.php
 #        ufw allow $PORT/tcp
 #        ufw allow $PORT/udp
 #    else
-#        echo "Port $PORT đã được mở"
+#        echo "Port $PORT da duoc mo"
 #    fi
 #done
 
 ### Cau hinh tren ufw
 FIREWALLLIST_TCP="21 22 25 80 443 465 587 $svport"
 
-# Mở cổng TCP
+# Mo cong TCP
 for PORT in ${FIREWALLLIST_TCP}; do
     if ! ufw status | grep -qw "$PORT"; then
         ufw allow $PORT/tcp
     else
-        echo "Port $PORT đã được mở trên TCP"
+        echo "Port $PORT da duoc mo tren TCP"
     fi
 done
 
 
-# Mở port SSH nếu không phải là port 22
+# Mo port SSH neu khong phai la port 22
 current_ssh_port=${SSH_CLIENT##* }
 echo "current_ssh_port: "$current_ssh_port
 if [ ! "$current_ssh_port" = "22" ]; then
     ufw allow $current_ssh_port/tcp
 fi
 
-# Tải lại cấu hình ufw
+# Tai lai cau hinh ufw
 sudo ufw reload
 
 #----------------------------
 ### Cau hinh tren iptables
-# Danh sách các cổng TCP
+# Danh sach cac cong TCP
 #FIREWALLLIST_TCP="21 22 25 80 443 465 587 $svport"
 
-# Mở cổng TCP
+# Mo cong TCP
 #for PORT in ${FIREWALLLIST_TCP}; do
-    # Kiểm tra nếu cổng đã mở
+    # Kiem tra neu cong da mo
 #    if ! iptables -L INPUT -v -n | grep -q "$PORT"; then
 #        iptables -A INPUT -p tcp --dport $PORT -j ACCEPT
 #        echo "Mo cong TCP: $PORT"
@@ -1169,7 +1169,7 @@ sudo ufw reload
 #    fi
 #done
 
-# Mở port SSH nếu không phải là port 22
+# Mo port SSH neu khong phai la port 22
 #current_ssh_port=${SSH_CLIENT##* }
 #echo "current_ssh_port: $current_ssh_port"
 #if [ "$current_ssh_port" != "22" ]; then
@@ -1177,7 +1177,7 @@ sudo ufw reload
 #    echo "Mo cong SSH: $current_ssh_port"
 #fi
 
-# Lưu lại cấu hình iptables
+# Luu lai cau hinh iptables
 #iptables-save > /etc/iptables/rules.v4
 
 #----------------

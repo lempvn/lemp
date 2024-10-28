@@ -35,7 +35,7 @@ if [ "$luachonclearcache" = "zendcache" ]; then
     echo "Please wait ..."; sleep 1
     clear
     echo "========================================================================= "
-    systemctl restart php${PHP_VERSION}-fpm.service  # Cập nhật với phiên bản PHP đang sử dụng
+    systemctl restart php${PHP_VERSION}-fpm.service  # Cap nhat voi phien ban PHP dang su dung
 	echo "Clear Opcache thanh cong!"
     lemp
 elif [ "$luachonclearcache" = "memcached" ]; then
@@ -60,7 +60,7 @@ elif [ "$luachonclearcache" = "allcache" ]; then
     clear
     echo "========================================================================= "
     if [ -f /etc/php/${PHP_VERSION}/mods-available/opcache.ini ]; then
-        systemctl restart php${PHP_VERSION}-fpm.service  # Cập nhật với phiên bản PHP đang sử dụng
+        systemctl restart php${PHP_VERSION}-fpm.service  # Cap nhat voi phien ban PHP dang su dung
     fi
     echo "flush_all" | nc 127.0.0.1 11211
     ( echo "flushall" ) | redis-cli

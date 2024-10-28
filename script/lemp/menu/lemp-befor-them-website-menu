@@ -1,5 +1,5 @@
 #!/bin/bash
-# Nguồn cấu hình lemp
+# Nguon cau hinh lemp
 if [ -f /home/lemp.conf ]; then
     source /home/lemp.conf
 else
@@ -7,7 +7,7 @@ else
     exit 1
 fi
 
-# Kiểm tra tệp thông tin cơ sở dữ liệu
+# Kiem tra tep thong tin co so du lieu
 if [ ! -f /home/DBinfo.txt ]; then
     echo "=========================================================================" > /home/DBinfo.txt
     echo "THONG TIN DATABASE TREN VPS" >> /home/DBinfo.txt
@@ -16,7 +16,7 @@ if [ ! -f /home/DBinfo.txt ]; then
 fi
 
 check_nginx_service () {
-    # Kiểm tra trạng thái Nginx
+    # Kiem tra trang thai Nginx
     if systemctl is-active --quiet nginx; then
         clear
         if [ -f /etc/lemp/menu/lemp-them-website-menu ]; then
@@ -46,7 +46,7 @@ check_nginx_service () {
     fi
 }
 
-# Kiểm tra trạng thái của dịch vụ PHP-FPM
+# Kiem tra trang thai cua dich vu PHP-FPM
 check_php_fpm_status () {
     local service="$1"
     if systemctl is-active --quiet "$service"; then
@@ -56,11 +56,11 @@ check_php_fpm_status () {
     fi
 }
 
-# Lấy phiên bản PHP hiện tại
+# Lay phien ban PHP hien tai
 PHP_VERSION=$(php -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;")
 echo "Phien ban PHP hien tai: $PHP_VERSION"
 
-# Kiểm tra dịch vụ PHP-FPM dựa trên phiên bản PHP
+# Kiem tra dich vu PHP-FPM dua tren phien ban PHP
 php_fpm_service="php${PHP_VERSION}-fpm.service"
 
 if systemctl list-units --type=service | grep -q "$php_fpm_service"; then
@@ -70,10 +70,10 @@ else
     exit 1
 fi
 
-# Kiểm tra Nginx cho dịch vụ PHP-FPM
+# Kiem tra Nginx cho dich vu PHP-FPM
 check_nginx_service
 
-# Kiểm tra trạng thái của dịch vụ PHP-FPM
+# Kiem tra trang thai cua dich vu PHP-FPM
 check_php_fpm_status "$php_fpm_service"
 
 echo "========================================================================"

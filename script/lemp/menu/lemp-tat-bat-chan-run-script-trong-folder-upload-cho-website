@@ -1,79 +1,79 @@
 #!/bin/bash 
 . /home/lemp.conf
 
-# Hiển thị thông tin ban đầu
+# Hien thi thong tin ban dau
 echo "========================================================================="
-echo "Sử dụng chức năng này để ALLOW/DENY chạy script trong writable folder"
+echo "Su dung chuc nang nay de ALLOW/DENY chay script trong writable folder"
 echo "-------------------------------------------------------------------------"
-echo "Thư mục: uploads, images, cache, media, logs, tmp - Script: PHP, PL, PY, JSP, SH, CGI"
+echo "Thu muc: uploads, images, cache, media, logs, tmp - Script: PHP, PL, PY, JSP, SH, CGI"
 echo "-------------------------------------------------------------------------"
-echo "Chỉnh sửa quy tắc tại: /etc/nginx/conf/deny-script-writeable-folder.conf"
+echo "Chinh sua quy tac tai: /etc/nginx/conf/deny-script-writeable-folder.conf"
 echo "========================================================================="
 
-# Hàm nhập tên website
+# Ham nhap ten website
 nhapwebsite() {
-    echo -n "Nhập tên website: "  
+    echo -n "Nhap ten website: "  
     read website
-    website=$(echo "$website" | tr '[:upper:]' '[:lower:]')  # Chuyển đổi thành chữ thường
+    website=$(echo "$website" | tr '[:upper:]' '[:lower:]')  # Chuyen doi thanh chu thuong
 
-    # Kiểm tra xem website có phải là Net2FTP không
+    # Kiem tra xem website co phai la Net2FTP khong
     if [ -f /etc/lemp/net2ftpsite.info ]; then
         net2ftpsite=$(cat /etc/lemp/net2ftpsite.info)
         if [ "$website" = "$net2ftpsite" ]; then
             #clear
             echo "========================================================================="
-            echo "$website là domain Net2FTP"
+            echo "$website la domain Net2FTP"
             echo "-------------------------------------------------------------------------"
-            echo "Bạn không thể sử dụng chức năng này."
+            echo "Ban khong the su dung chuc nang nay."
             /etc/lemp/menu/tienich/lemp-tien-ich
             exit
         fi
     fi
 
-    # Kiểm tra tên website đã nhập
+    # Kiem tra ten website da nhap
     if [ -z "$website" ]; then
         echo "-------------------------------------------------------------------------"
-        echo "Bạn chưa nhập tên website"
+        echo "Ban chua nhap ten website"
         echo "-------------------------------------------------------------------------"
         nhapwebsite
         return
     fi
 
-    # Kiểm tra định dạng domain
+    # Kiem tra dinh dang domain
     kiemtradomain3="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,14}"
     if [[ ! "$website" =~ $kiemtradomain3 ]]; then
         echo "-------------------------------------------------------------------------"
-        echo "$website có vẻ không phải là domain!"
+        echo "$website co ve khong phai la domain!"
         echo "-------------------------------------------------------------------------"
         nhapwebsite
         return
     fi
 
-    # Kiểm tra file cấu hình của website
+    # Kiem tra file cau hinh cua website
     if [ ! -f /etc/nginx/conf.d/$website.conf ] && [ ! -f /etc/nginx/conf.d/www.$website.conf ]; then
         echo "-------------------------------------------------------------------------"
-        echo "Không tìm thấy $website trên server"
+        echo "Khong tim thay $website tren server"
         echo "-------------------------------------------------------------------------"
         nhapwebsite
         return
     fi
 
-    # Kiểm tra cấu hình block.conf
+    # Kiem tra cau hinh block.conf
     for conf_file in /etc/nginx/conf.d/$website.conf /etc/nginx/conf.d/www.$website.conf; do
         if [ -f "$conf_file" ]; then
             if ! grep -q block.conf "$conf_file"; then
                 #clear
                 echo "========================================================================="
-                echo "Bạn đã thay đổi cấu hình Vhost mặc định của $website"
+                echo "Ban da thay doi cau hinh Vhost mac dinh cua $website"
                 echo "-------------------------------------------------------------------------"
-                echo "LEMP không thể thực hiện yêu cầu của bạn."
+                echo "LEMP khong the thuc hien yeu cau cua ban."
                 /etc/lemp/menu/lemp-block-exploits-sql-injections-menu
                 exit
             fi
         fi
     done
 
-    # Kiểm tra cấu hình deny-script-writeable-folder.conf
+    # Kiem tra cau hinh deny-script-writeable-folder.conf
     for conf_file in /etc/nginx/conf.d/$website.conf /etc/nginx/conf.d/www.$website.conf; do
         if [ -f "$conf_file" ]; then
             if ! grep -q deny-script-writeable-folder.conf "$conf_file"; then
@@ -82,20 +82,20 @@ nhapwebsite() {
         fi
     done
 
-    # Xử lý cho phép hoặc không cho phép chạy script
+    # Xu ly cho phep hoac khong cho phep chay script
     if [ ! "$check" == "bat" ]; then
         echo "========================================================================="
-        echo "$website hiện tại KHÔNG CHO PHÉP chạy Script trong writable folder"
+        echo "$website hien tai KHONG CHO PHEP chay Script trong writable folder"
         echo "-------------------------------------------------------------------------"
-        read -r -p "CHO PHÉP chạy Script trong writable folder? [y/N] " response
+        read -r -p "CHO PHEP chay Script trong writable folder? [y/N] " response
         case $response in
             [yY][eE][sS]|[yY]) 
                 echo "-------------------------------------------------------------------------"
-                echo "Vui lòng đợi..."   		
+                echo "Vui long doi..."   		
                 sleep 1  
                 cat > "/tmp/chanrunscriptuploadfolder.sh" <<END
 #!/bin/sh
-# Xóa các dòng liên quan đến writable-directories và deny-script-writeable-folder trong cấu hình
+# Xoa cac dong lien quan den writable-directories va deny-script-writeable-folder trong cau hinh
 for conf_file in /etc/nginx/conf.d/$website.conf /etc/nginx/conf.d/www.$website.conf; do
     if [ -f "\$conf_file" ]; then
         sed -i '/writable-directories/d' "\$conf_file" 
@@ -117,13 +117,13 @@ END
 
                 #clear
                 echo "========================================================================="
-                echo "Cấu hình CHO PHÉP chạy Script trong writable folder cho $website thành công!"
+                echo "Cau hinh CHO PHEP chay Script trong writable folder cho $website thanh cong!"
                 /etc/lemp/menu/tienich/lemp-tien-ich
                 ;;
             *)
                 #clear
                 echo "========================================================================="
-                echo "Hủy thay đổi cấu hình Vhost cho $website"
+                echo "Huy thay doi cau hinh Vhost cho $website"
                 /etc/lemp/menu/tienich/lemp-tien-ich
                 ;;
         esac
@@ -131,18 +131,18 @@ END
     fi
 
     echo "========================================================================="
-    echo "$website hiện tại CHO PHÉP chạy Script trong writable folder"
+    echo "$website hien tai CHO PHEP chay Script trong writable folder"
     echo "-------------------------------------------------------------------------"
-    read -r -p "KHÔNG CHO PHÉP chạy Script trong writable folder? [y/N] " response
+    read -r -p "KHONG CHO PHEP chay Script trong writable folder? [y/N] " response
     case $response in
         [yY][eE][sS]|[yY]) 
             echo "-------------------------------------------------------------------------"
-            echo "Vui lòng đợi..."
+            echo "Vui long doi..."
             sleep 1
             rm -rf /tmp/chanrunscriptuploadfolder.sh
             cat > "/tmp/chanrunscriptuploadfolder.sh" <<END
 #!/bin/sh
-# Cập nhật cấu hình để không cho phép chạy script trong writable folder
+# Cap nhat cau hinh de khong cho phep chay script trong writable folder
 for conf_file in /etc/nginx/conf.d/$website.conf /etc/nginx/conf.d/www.$website.conf; do
     if [ -f "\$conf_file" ]; then
         if ! grep -q deny-script-writeable-folder.conf "\$conf_file"; then
@@ -167,18 +167,18 @@ END
 
             #clear
             echo "========================================================================="
-            echo "Cấu hình KHÔNG cho phép chạy script trong writable folder cho $website thành công"
+            echo "Cau hinh KHONG cho phep chay script trong writable folder cho $website thanh cong"
             /etc/lemp/menu/tienich/lemp-tien-ich
             ;;
         *)
             #clear
             echo "========================================================================="
-            echo "Hủy thay đổi cấu hình Vhost cho $website"
+            echo "Huy thay doi cau hinh Vhost cho $website"
             /etc/lemp/menu/tienich/lemp-tien-ich
             ;;
     esac
     exit
 }
 
-# Gọi hàm nhập website
+# Goi ham nhap website
 nhapwebsite

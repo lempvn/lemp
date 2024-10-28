@@ -75,7 +75,7 @@ if [ -f /etc/nginx/.htpasswd ]; then
 
         rm -rf /etc/nginx/.htpasswd
 
-        # Cài đặt apache2-utils nếu chưa cài
+        # Cai dat apache2-utils neu chua cai
         if ! dpkg -l | grep -qw apache2-utils; then
             sudo apt update
             sudo apt install -y apache2-utils
@@ -168,7 +168,7 @@ define('ADMIN_PASSWORD','$matkhau');    // Admin Password
 END
 rm -rf /etc/nginx/.htpasswd
 
-# Cài đặt apache2-utils nếu chưa cài
+# Cai dat apache2-utils neu chua cai
 if ! dpkg -l | grep -qw apache2-utils; then
     sudo apt update
     sudo apt install -y apache2-utils

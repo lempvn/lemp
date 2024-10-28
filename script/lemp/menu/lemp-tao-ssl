@@ -207,7 +207,7 @@ echo "Link download $domainssl.csr:"
 echo "-------------------------------------------------------------------------"
 echo "http://$serverip:$priport/$domainssl.csr"
 echo "-------------------------------------------------------------------------"
-echo "Xem huong dan tren VPS.VN"
+echo "Xem huong dan tren LEMP.VN"
 echo "========================================================================= "
 read -p "Press [Enter] de quay tro lai LEMP ..."
 clear
