@@ -1,7 +1,0 @@
-#!/bin/bash 
-. /home/lemp.conf
-if [ ! -f /etc/csf/csf.conf ]; then
-/etc/lemp/menu/CSF-Fiwall/lemp-cai-dat-csf-csf
-else
-/etc/lemp/menu/CSF-Fiwall/lemp-update-csf-firewall
-fi

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>VPS.VN</title>
+<title>lemp.vn</title>
 <style>
 input {
 	width: 99%;
@@ -16,11 +16,11 @@ input {
 </head>
 <body>
 <div>
-	<input type="text" value="curl -sO https://vps.vn/install && bash install" onClick="this.select();">
+	<input type="text" value="wget https://raw.githubusercontent.com/lempvn/lemp/refs/heads/main/install.sh && chmod +x install.sh && bash install.sh" onClick="this.select();">
 </div>
 <br>
 <div>
-	<input type="text" value="yum -y install wget ; wget --no-check-certificate https://vps.vn/install ; chmod +x install ; bash install" onClick="this.select();">
+	<input type="text" value="sudo apt install wget -y ; wget https://raw.githubusercontent.com/lempvn/lemp/refs/heads/main/install.sh && chmod +x install.sh && bash install.sh" onClick="this.select();">
 </div>
 </body>
 </html>

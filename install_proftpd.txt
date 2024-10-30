@@ -1,2 +1,0 @@
-
-sudo apt install proftpd-basic proftpd-core proftpd-doc proftpd-mod-crypto proftpd-mod-wrap

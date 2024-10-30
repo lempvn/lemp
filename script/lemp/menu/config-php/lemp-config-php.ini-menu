@@ -80,7 +80,7 @@ if [ "$luachon" = "enabledisablephpfunction" ]; then
 #OnOffDisplayErrors
 ###################################
 elif [ "$luachon" = "OnOffDisplayErrors" ]; then
-/etc/lemp/menu/config-php/lemp-befor-bat-tat-display-error
+/etc/lemp/menu/config-php/lemp-befor-bat-tat-display-error.sh
 
 
 elif [ "$luachon" = "fileuploads" ]; then

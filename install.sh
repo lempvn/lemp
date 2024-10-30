@@ -73,7 +73,7 @@ git clone https://github.com/lempvn/lemp.git vps_lemp
 
 # chay lan luot cac lenh sau
 find /opt/vps_lemp/script/lemp/menu -type f -exec chmod 755 {} \;
-/opt/vps_lemp/script/lemp/menu/git-clone-done
+/opt/vps_lemp/script/lemp/menu/git-clone-done.sh
 
 #echo "update LEMP menu"
 mkdir -p /etc/lemp/menu ; chmod 755 /etc/lemp/menu
@@ -81,9 +81,9 @@ mkdir -p /etc/lemp/menu ; chmod 755 /etc/lemp/menu
 yes | cp -rf /opt/vps_lemp/script/lemp/menu/. /etc/lemp/menu/
 
 #echo "Chmod 755 Menu"
-/opt/vps_lemp/script/lemp/menu/chmod-755-menu
+/opt/vps_lemp/script/lemp/menu/chmod-755-menu.sh
 
 
 cd /opt/vps_lemp
-chmod +x setup
-bash setup
+chmod +x setup.sh
+bash setup.sh
