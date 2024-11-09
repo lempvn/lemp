@@ -1277,34 +1277,6 @@ END
 mariadb -u root -p$mariadbpass < /tmp/config.temp
 rm -f /tmp/config.temp
 
-cat > /root/lemp.info << END
-echo "=========================================================================="
-echo "LEMP da hoan tat qua trinh cai dat Server. "
-echo "=========================================================================="
-echo "Lenh goi LEMP: lemp"
-echo "--------------------------------------------------------------------------"
-echo "Link phpMyAdmin: http://$svip:$svport"
-echo "--------------------------------------------------------------------------"
-echo "Quan Ly Zend Opcache: http://$svip:$svport/ocp.php"
-echo "--------------------------------------------------------------------------"
-#echo "Quan Ly Memcached: http://$svip:$svport/memcache.php"
-#echo "--------------------------------------------------------------------------"
-echo "Xem Server Status: http://$svip:$svport/status.php"
-echo "--------------------------------------------------------------------------"
-echo "Thong tin username & password bao ve phpMyAdmin, ocp.php, status.php ..."
-echo "--------------------------------------------------------------------------"
-echo "Username: $usernamebv  | Password: $matkhaubv"
-echo "--------------------------------------------------------------------------"
-echo "Thay thong tin dang nhap nay: LEMP menu ==> User & Password Mac Dinh. "
-echo "=========================================================================="
-echo "Thong tin quan ly duoc luu tai: /home/LEMP-manage-info.txt "
-echo "--------------------------------------------------------------------------"
-echo "va gui kem luu y su dung LEMP toi: $lempemail"
-echo "=========================================================================="
-echo "Server se tu khoi dong lai sau 3 giay.... "
-sleep 3
-echo "Tien hanh reboot lai..."
-END
 
 echo "=========================================================================="
 echo "LEMP da hoan tat qua trinh cai dat Server. "
